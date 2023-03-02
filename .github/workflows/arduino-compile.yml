@@ -22,4 +22,4 @@ jobs:
         run: arduino-cli core install rp2040:rp2040@3.0.0 --additional-urls https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
 
       - name: Compile Sketch
-        run: arduino-cli compile --fqbn ${{ matrix.fqbn }} --build-path ./build/device --board-options Usb Stack = Adafruit Tiny USB
+        run: arduino-cli compile --fqbn ${{ matrix.fqbn }} --build-path ./build/device
