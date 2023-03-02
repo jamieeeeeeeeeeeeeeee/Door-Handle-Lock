@@ -1,1 +1,2 @@
-# Latest Build (.uf2 file)
+# Latest Build 
+`device/device.ino.uf2`
