@@ -29,7 +29,8 @@ jobs:
 
       - name: Push build to build branch
         uses: EndBug/add-and-commit@v9
-        add: ".build"
-        branch: build
-        push: true
-        force: true
+        with:
+          add: ".build"
+          branch: build
+          push: true
+          force: true
