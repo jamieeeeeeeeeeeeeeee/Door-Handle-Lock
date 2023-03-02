@@ -1,21 +1,33 @@
+# This is the name of the workflow, visible on GitHub UI.
 name: Arduino Compile
-on: [push]
+on: [push, pull_request]
 
-jobs: 
-  compile-sketch:
-    runs-on: ubuntu-latest
+jobs:
+  # This is the name of the job - can be whatever.
+  compile:
+    runs-on: windows-latest
+
+    # This is the list of steps this job will run.
     steps:
-      - uses: actions/checkout@v2
-      - uses: arduino/compile-sketches@v1
-        with:
-          board_manager:
-            additional_urls:
-              https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
-          platforms: |
-            "rp2040:rp2040"
-          fqbn: rp2040:rp2040
-          sketch-paths: |
-            - ./device
-          libraries: |
-            "Adafruit Fingerprint Sensor Library"
+      - name: Checkout
+        uses: actions/checkout@v3
 
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+
+      - name: Add Board Manager URL
+        run: arduino-cli config add board_manager.additional_urls https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+      
+      - name: Update Core Index
+        run: arduino-cli core update-index
+        
+      - name: Install Raspberry Pi Pico W core
+        run: arduino-cli core install rp2040
+
+      - name: Install platform
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install ${{ matrix.arduino-platform }}
+
+      - name: Compile Sketch
+        run: arduino-cli compile --fqbn ${{ matrix.fqbn }} --build-path ./build/picow -p picow picow/picow.ino
