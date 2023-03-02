@@ -1,4 +1,4 @@
-# doorhandlelock
+# Door Handle Lock
 Door handle and lock for A-Level Design Engineering project.
 
 `client` is the app for setting up and controlling the device, written using Flutter / Dart.
