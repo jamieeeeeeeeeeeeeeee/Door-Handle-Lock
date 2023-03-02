@@ -15,5 +15,5 @@ jobs:
           sketch-paths: |
             - ./picow
           libraries: |
-            - name: Adafruit_Fingerprint_Sensor
+            - name: Adafruit_Fingerprint_Sensor_Library
 
