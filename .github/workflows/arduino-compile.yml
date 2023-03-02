@@ -21,10 +21,5 @@ jobs:
       - name: Install RP2040 core
         run: arduino-cli core install rp2040:rp2040@3.0.0 --additional-urls https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
 
-      - name: Install RP2040 platform
-        run: |
-          arduino-cli core update-index
-          arduino-cli core install ${{ matrix.arduino-platform }}
-
       - name: Compile Sketch
         run: arduino-cli compile --fqbn ${{ matrix.fqbn }} --build-path ./build/picow -p picow picow/picow.ino
