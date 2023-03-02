@@ -3,22 +3,20 @@ name: Arduino Compile
 on: [push, pull_request]
 
 jobs:
-  # This is the name of the job - can be whatever.
-  compile:
+  arduino-compile:
     runs-on: ubuntu-latest
 
-    # This is the list of steps this job will run.
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v1
-      
-      - name: Download RP2040 core
+
+      - name: Download (Earle F. Philhower, III) RP2040 core
         run: arduino-cli core update-index --additional-urls https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
 
-      - name: Install RP2040 core
+      - name: Install (Earle F. Philower, III) RP2040 core
         run: arduino-cli core install rp2040:rp2040@3.0.0 --additional-urls https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
 
       - name: Download Libraries
@@ -26,6 +24,6 @@ jobs:
       
       - name: Install Libraries
         run: arduino-cli lib install "Adafruit Fingerprint Sensor Library"
-        
+
       - name: Compile Sketch
         run: arduino-cli compile device/ --fqbn rp2040:rp2040:rpipicow --build-path ./build/device --additional-urls https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
