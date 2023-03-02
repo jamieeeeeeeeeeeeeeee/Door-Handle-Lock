@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   arduino-compile:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest, windows-latest
 
     steps:
       - name: Checkout
