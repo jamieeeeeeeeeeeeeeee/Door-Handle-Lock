@@ -21,7 +21,7 @@ jobs:
       - name: Install RP2040 core
         run: arduino-cli core install rp2040:rp2040
 
-      - name: Install platform
+      - name: Install RP2040 platform
         run: |
           arduino-cli core update-index
           arduino-cli core install ${{ matrix.arduino-platform }}
