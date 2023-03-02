@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: arduino/actions/libraries/compile-sketches@v1
+      - uses: arduino/compile-sketches@v1
         with:
           fqbn: earlephilhower:rp2040:rp2040
           sketch-paths: |
