@@ -15,4 +15,4 @@ jobs:
             - ./picow
           libraries: |
             - name: Adafruit_Fingerprint_Sensor
-              version: 1.0.0
+
