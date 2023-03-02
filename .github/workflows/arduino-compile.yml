@@ -15,6 +15,5 @@ jobs:
           sketch-paths: |
             - ./picow
           libraries: |
-            - name: Adafruit Fingerprint Sensor Library
-            source-url: https://github.com/adafruit/Adafruit-Fingerprint-Sensor-Library
+            Adafruit Fingerprint Sensor Library
 
