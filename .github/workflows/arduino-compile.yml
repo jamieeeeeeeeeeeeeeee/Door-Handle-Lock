@@ -3,10 +3,8 @@ on: [push]
 
 jobs: 
   compile-sketch:
-
     runs-on: ubuntu-latest
     steps:
-      fail-fast: false
       - uses: actions/checkout@v2
       - uses: arduino/compile-sketches@v1
         with:
