@@ -1,14 +1,16 @@
 name: Arduino Compile
-on: [push, pull_request]
+on: [push]
 
 jobs: 
   compile-sketch:
+
     runs-on: ubuntu-latest
     steps:
+      fail-fast: false
       - uses: actions/checkout@v2
       - uses: arduino/compile-sketches@v1
         with:
-          fqbn: earlephilhower:rp2040:rp2040
+          fqbn: rp2040:rp2040
           sketch-paths: |
             - ./picow
           libraries: |
