@@ -9,7 +9,7 @@ jobs:
       - uses: arduino/compile-sketches@v1
         with:
           board_manager:
-            additional-urls:
+            additional_urls:
               - https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
           platforms: |
             "rp2040:rp2040"
