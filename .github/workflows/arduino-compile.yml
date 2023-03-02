@@ -27,10 +27,9 @@ jobs:
       - name: Compile Sketch
         run: arduino-cli compile device/ --fqbn rp2040:rp2040:rpipicow --build-path ./build/device --additional-urls https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
 
-      - name: Push build to build branch
-        uses: EndBug/add-and-commit@v9
-        with:
-          add: ".build"
-          branch: build
-          push: true
-          force: true
+      - name: Push build folder to build branch
+        run: |
+        git checkout build
+        git add -f ./build
+        git commit -m "{{ github.sha }}"
+        git push --force origin build
