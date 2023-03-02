@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   # This is the name of the job - can be whatever.
   compile:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     # This is the list of steps this job will run.
     steps:
@@ -20,9 +20,9 @@ jobs:
       
       - name: Update Core Index
         run: arduino-cli core update-index
-        
+
       - name: Install Raspberry Pi Pico W core
-        run: arduino-cli core install rp2040
+        run: arduino-cli core install rp2040:rp2040
 
       - name: Install platform
         run: |
