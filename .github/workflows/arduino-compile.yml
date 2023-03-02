@@ -4,14 +4,7 @@ on: [push, pull_request]
 
 jobs:
   # This is the name of the job - can be whatever.
-  test-matrix:
-    strategy:
-      matrix:
-        arduino-platform: ["EarlePhilhower:rp2040"]
-        include:
-          - arduino-platform: "EarlePhilhower:rp2040"
-            fqbn: "EarlePhilhower:rp2040:rp2040"
-
+  compile:
     runs-on: windows-latest
 
     # This is the list of steps this job will run.
@@ -22,10 +15,17 @@ jobs:
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v1
 
+      - name: Add Board Manager URL
+        run: arduino-cli config add board_manager.additional_urls 
+        https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+      
+      - name: Install Raspberry Pi Pico W core
+        run: arduino-cli core install rp2040
+
       - name: Install platform
         run: |
           arduino-cli core update-index
           arduino-cli core install ${{ matrix.arduino-platform }}
 
       - name: Compile Sketch
-        run: arduino-cli compile --fqbn ${{ matrix.fqbn }} ./build
+        run: arduino-cli compile --fqbn ${{ matrix.fqbn }} --build-path ./build/picow -p picow picow/picow.ino
