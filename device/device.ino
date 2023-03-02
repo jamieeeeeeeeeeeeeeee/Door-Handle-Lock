@@ -151,7 +151,7 @@ void loop(void)
       AP_MODE = false;
       server.close();
       WiFi.softAPdisconnect(true);
-      WiFi.begin("SKYVUY5A", "JHrExT2eT1bU");   
+      WiFi.begin("SKYVUY5A", "oops hehe");   
       
       timeout = timeout > 30 ? timeout : 30; // 30 * 500 = 15 seconds, reasonable time
 
