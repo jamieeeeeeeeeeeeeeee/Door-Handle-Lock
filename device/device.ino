@@ -111,10 +111,6 @@ void setup(void)
 
     addr = 1; // important to skip first byte.. 
 
-    for (int i = 0; i < 8; i++) {
-      first_time[i] = EEPROM.read(addr++);
-    }
-
     for (int i = 0; i < 32; i++) {
       ssid_bytes[i] = EEPROM.read(addr++);
     }
