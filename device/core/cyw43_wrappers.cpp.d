@@ -1,4 +1,4 @@
-/home/runner/work/doorhandlelock/doorhandlelock/build/device/core/cyw43_wrappers.cpp.o: \
+/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/core/cyw43_wrappers.cpp.o: \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/cyw43_wrappers.cpp \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/lib/lwip/src/include/lwip/netif.h \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/lib/lwip/src/include/lwip/opt.h \

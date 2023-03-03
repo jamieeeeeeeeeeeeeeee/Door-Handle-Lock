@@ -1,4 +1,4 @@
-/home/runner/work/doorhandlelock/doorhandlelock/build/device/libraries/MD5Builder/MD5Builder.cpp.o: \
+/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/libraries/MD5Builder/MD5Builder.cpp.o: \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/libraries/MD5Builder/src/MD5Builder.cpp \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/Arduino.h \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/stdlib_noniso.h \

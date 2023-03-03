@@ -1,5 +1,5 @@
-# 1 "/home/runner/work/doorhandlelock/doorhandlelock/device/device.ino"
-# 2 "/home/runner/work/doorhandlelock/doorhandlelock/device/device.ino" 2
+# 1 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+# 2 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino" 2
 using namespace pimoroni;
 
 // Bootsel, fingerprint sensor and servo globals
@@ -17,7 +17,7 @@ int wifi_status = WIFI_NOT_CONNECTED;
 int timeout = 30;
 int timeout_safety = 8;
 String mac;
-String ssid;
+String ssid; // tidy this up later
 
 // Display globals
 ST7789 display(320, 240, ROTATE_0, false, get_spi_pins(BG_SPI_FRONT));
@@ -26,6 +26,9 @@ uint8_t last_pen[3];
 Pen BLACK;
 Pen WHITE;
 Pen PRIMARY;
+
+// EEPROM globals
+int addr;
 
 // Unlock servo function
 void unlock(void) {
@@ -42,6 +45,37 @@ void unlock(void) {
   }
 }
 
+char connect_wifi(char *name, char *pass) {
+  // Connect to Wi-Fi
+  WiFi.begin(name, pass);
+  timeout = timeout > 30 ? timeout : 30; // 30 * 500 = 15 seconds, reasonable time
+
+  while (WiFi.status() != WL_CONNECTED and timeout > 0) {
+    // temp blocking loop - move to second core
+    // otherwise if this hangs forever, the
+    // rest of the program will not run
+    delay(500);
+    finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x03 /*!< Purple LEDpassword*/);
+    timeout--;
+    if (WiFi.status() == WL_CONNECT_FAILED) {
+      timeout = 0; // important not for breaking but for resetting time out value correctly
+      break;
+    }
+  }
+
+  if (WiFi.status() != WL_CONNECTED) {
+    WiFi.disconnect(); // cancel connection attempt, if any
+    // in the case of multiple retries, that are caused by
+    // the connection simply being slow, we will increase the timeout attempts
+    if (timeout == 0) {
+      timeout = 30 + timeout_safety;
+      timeout_safety += 8;
+    }
+    return 0;
+  }
+  return 1;
+}
+
 // Setup 
 void setup(void)
 {
@@ -50,12 +84,61 @@ void setup(void)
   memset(last_pen, 0, sizeof(last_pen));
   memset(packet, 0, sizeof(packet));
 
+  // EEPROM setup
+  addr = 0;
+  EEPROM.begin(256); // 256 bytes of EEPROM (1 for being aware of first time setup, 32 SSID + 64 password) some more for later
+  byte first = EEPROM.read(addr);
+
+  if (first == 0) {
+    AP_MODE = true;
+    WiFi.mode(WIFI_STA);
+    WiFi.softAP("Door Lock - " + mac.substring(0, 6)); // leave password empty for open AP
+    server.begin();
+  }
+  else {
+    AP_MODE = false;
+    byte ssid_bytes[32];
+    byte password_bytes[64];
+
+    memset(ssid_bytes, 0, sizeof(ssid_bytes));
+    memset(password_bytes, 0, sizeof(password_bytes));
+
+    addr = 1; // important to skip first byte.. 
+
+    for (int i = 0; i < 32; i++) {
+      ssid_bytes[i] = EEPROM.read(addr++);
+    }
+
+    for (int i = 0; i < 64; i++) {
+      password_bytes[i] = EEPROM.read(addr++);
+    }
+
+    String ssid = String((char *)ssid_bytes);
+    String password = String((char *)password_bytes);
+
+    if (ssid == "" || password == "") {
+      // first time = true;
+    }
+    else {
+      // add attempts later but for now we will just continue trying forever until we connect. 
+      while (true) {
+        char connect = connect_wifi((char *)ssid.c_str(), (char *)password.c_str());
+        if (connect == 1) {
+          wifi_status = WIFI_CONNECTED;
+          break;
+        }
+        else {
+          wifi_status = WIFI_NOT_CONNECTED;
+        }
+      }
+    }
+  }
+
   // Display setup
   graphics.clear();
   BLACK = graphics.create_pen(0, 0, 0);
   WHITE = graphics.create_pen(255, 255, 255);
   PRIMARY = graphics.create_pen(176, 196, 222);
-
 
   display.set_backlight(255);
   display.update(&graphics);
@@ -152,7 +235,7 @@ void loop(void)
       AP_MODE = false;
       server.close();
       WiFi.softAPdisconnect(true);
-      WiFi.begin("SKYVUY5A", "oops hehe");
+      WiFi.begin(home_ssid, home_password); //change this later to work with connect_wifi...   
 
       timeout = timeout > 30 ? timeout : 30; // 30 * 500 = 15 seconds, reasonable time
 
@@ -164,6 +247,7 @@ void loop(void)
         finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x03 /*!< Purple LEDpassword*/);
         timeout--;
         if (WiFi.status() == WL_CONNECT_FAILED) {
+          timeout = 0; // important not for breaking but for resetting time out value correctly
           break;
         }
       }
@@ -188,6 +272,18 @@ void loop(void)
         display.update(&graphics);
         return;
       }
+
+      byte first = EEPROM.read(0);
+      if (!first) {
+        EEPROM.write(0, 1);
+      }
+      for (int i = 0; i < 32; i++) {
+        EEPROM.write(i + 1, home_ssid[i]);
+      }
+      for (int i = 64; i < 96; i++) {
+        EEPROM.write(i + 1, home_password[i]);
+      }
+      EEPROM.commit();
       // get my ip address
       IPAddress ip = WiFi.localIP();
 

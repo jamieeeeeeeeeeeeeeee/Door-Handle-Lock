@@ -1,4 +1,4 @@
-/home/runner/work/doorhandlelock/doorhandlelock/build/device/libraries/Adafruit_Fingerprint_Sensor_Library/Adafruit_Fingerprint.cpp.o: \
+/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/libraries/Adafruit_Fingerprint_Sensor_Library/Adafruit_Fingerprint.cpp.o: \
  /home/runner/Arduino/libraries/Adafruit_Fingerprint_Sensor_Library/Adafruit_Fingerprint.cpp \
  /home/runner/Arduino/libraries/Adafruit_Fingerprint_Sensor_Library/Adafruit_Fingerprint.h \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/Arduino.h \

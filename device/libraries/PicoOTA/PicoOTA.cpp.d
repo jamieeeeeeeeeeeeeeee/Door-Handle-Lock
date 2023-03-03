@@ -1,4 +1,4 @@
-/home/runner/work/doorhandlelock/doorhandlelock/build/device/libraries/PicoOTA/PicoOTA.cpp.o: \
+/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/libraries/PicoOTA/PicoOTA.cpp.o: \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/libraries/PicoOTA/src/PicoOTA.cpp \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/libraries/PicoOTA/src/PicoOTA.h \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/libraries/LittleFS/src/LittleFS.h \

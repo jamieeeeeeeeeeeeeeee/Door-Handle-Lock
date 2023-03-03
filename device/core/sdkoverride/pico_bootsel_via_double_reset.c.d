@@ -1,4 +1,4 @@
-/home/runner/work/doorhandlelock/doorhandlelock/build/device/core/sdkoverride/pico_bootsel_via_double_reset.c.o: \
+/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/core/sdkoverride/pico_bootsel_via_double_reset.c.o: \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/sdkoverride/pico_bootsel_via_double_reset.c \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/src/common/pico_base/include/pico.h \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/src/common/pico_base/include/pico/types.h \

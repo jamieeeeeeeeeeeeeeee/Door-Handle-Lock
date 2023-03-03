@@ -1,4 +1,4 @@
-/home/runner/work/doorhandlelock/doorhandlelock/build/device/core/api/String.cpp.o: \
+/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/core/api/String.cpp.o: \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/api/String.cpp \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/api/../../../ArduinoCore-API/api/String.cpp \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/api/../../../ArduinoCore-API/api/String.h \

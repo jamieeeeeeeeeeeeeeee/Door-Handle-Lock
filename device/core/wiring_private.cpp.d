@@ -1,4 +1,4 @@
-/home/runner/work/doorhandlelock/doorhandlelock/build/device/core/wiring_private.cpp.o: \
+/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/core/wiring_private.cpp.o: \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/wiring_private.cpp \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/Arduino.h \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/stdlib_noniso.h \

@@ -1,4 +1,4 @@
-/home/runner/work/doorhandlelock/doorhandlelock/build/device/core/sdkoverride/btstack_flash_bank.cpp.o: \
+/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/core/sdkoverride/btstack_flash_bank.cpp.o: \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/sdkoverride/btstack_flash_bank.cpp \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/lib/btstack/src/btstack.h \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/lib/btstack/src/ad_parser.h \

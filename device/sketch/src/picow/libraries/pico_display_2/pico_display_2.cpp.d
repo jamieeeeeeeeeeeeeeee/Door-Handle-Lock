@@ -1,6 +1,6 @@
-/home/runner/work/doorhandlelock/doorhandlelock/build/device/sketch/src/picow/libraries/pico_display_2/pico_display_2.cpp.o: \
- /home/runner/work/doorhandlelock/doorhandlelock/build/device/sketch/src/picow/libraries/pico_display_2/pico_display_2.cpp \
- /home/runner/work/doorhandlelock/doorhandlelock/build/device/sketch/src/picow/libraries/pico_display_2/pico_display_2.hpp \
+/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/sketch/src/picow/libraries/pico_display_2/pico_display_2.cpp.o: \
+ /home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/sketch/src/picow/libraries/pico_display_2/pico_display_2.cpp \
+ /home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/sketch/src/picow/libraries/pico_display_2/pico_display_2.hpp \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/src/common/pico_stdlib/include/pico/stdlib.h \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/src/common/pico_base/include/pico.h \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/src/common/pico_base/include/pico/types.h \

@@ -1,4 +1,4 @@
-/home/runner/work/doorhandlelock/doorhandlelock/build/device/libraries/WiFi/WiFiClass.cpp.o: \
+/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/libraries/WiFi/WiFiClass.cpp.o: \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/libraries/WiFi/src/WiFiClass.cpp \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/src/rp2_common/pico_cyw43_arch/include/pico/cyw43_arch.h \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/src/common/pico_base/include/pico.h \

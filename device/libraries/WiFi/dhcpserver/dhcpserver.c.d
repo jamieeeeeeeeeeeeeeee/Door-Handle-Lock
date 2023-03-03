@@ -1,4 +1,4 @@
-/home/runner/work/doorhandlelock/doorhandlelock/build/device/libraries/WiFi/dhcpserver/dhcpserver.c.o: \
+/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/libraries/WiFi/dhcpserver/dhcpserver.c.o: \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/libraries/WiFi/src/dhcpserver/dhcpserver.c \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/lib/cyw43-driver/src/cyw43_config.h \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/src/rp2_common/pico_cyw43_driver/include/cyw43_configport.h \

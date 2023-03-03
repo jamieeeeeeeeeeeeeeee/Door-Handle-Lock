@@ -1,4 +1,4 @@
-/home/runner/work/doorhandlelock/doorhandlelock/build/device/core/lock.cpp.o: \
+/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/build/device/core/lock.cpp.o: \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0/cores/rp2040/lock.cpp \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/src/common/pico_sync/include/pico/mutex.h \
  /home/runner/.arduino15/packages/rp2040/hardware/rp2040/3.0.0//pico-sdk/src/common/pico_sync/include/pico/lock_core.h \

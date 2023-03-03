@@ -1,4 +1,4 @@
-#line 1 "/home/runner/work/doorhandlelock/doorhandlelock/device/device.hpp"
+#line 1 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.hpp"
 /***************************************************
   This is an example sketch for our optical Fingerprint sensor with LED ring
 
@@ -18,14 +18,16 @@
 
 #include <string.h>
 #include <math.h>
-#include <Adafruit_Fingerprint.h>
 #include <pico/stdlib.h>
 #include <hardware/gpio.h>
 #include <hardware/sync.h>
 #include "hardware/structs/ioqspi.h"
 #include "hardware/structs/sio.h"
-#include "Servo.h"
-#include "WiFi.h"
+
+#include <Adafruit_Fingerprint.h>
+#include <EEPROM.h>
+#include <Servo.h>
+#include <WiFi.h>
 #include "WiFiClient.h"
 #include "WiFiServer.h"
 #include "WiFiUdp.h"
