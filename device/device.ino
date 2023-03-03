@@ -96,18 +96,11 @@ void setup(void)
   }
   else {
     AP_MODE = false;
-    byte *ssid_bytes = malloc(sizeof(byte) * 32);
-    byte *password_bytes = malloc(sizeof(byte) * 64);
+    byte ssid_bytes[32];
+    byte password_bytes[64];
 
-    if (ssid_bytes == NULL || password_bytes == NULL) {
-    // Failed to allocate memory ?
-      while (true) {
-        gpio_put(PICO_LED, 1);
-        sleep_ms(100);
-        gpio_put(PICO_LED, 0);
-        sleep_ms(100);
-      }
-    }
+    memset(ssid_bytes, 0, sizeof(ssid_bytes));
+    memset(password_bytes, 0, sizeof(password_bytes));
 
     addr = 1; // important to skip first byte.. 
 
@@ -121,8 +114,6 @@ void setup(void)
 
     String ssid = String((char *)ssid_bytes); 
     String password = String((char *)password_bytes); 
-    free(ssid_bytes); // !!
-    free(password_bytes);
 
     if (ssid == "" || password == "") {
       // first time = true;
@@ -288,7 +279,7 @@ void loop(void)
       for (int i = 0; i < 32; i++) {
         EEPROM.write(i + 1, home_ssid[i]);
       }
-      for (int i = 64; j < 96; j++) {
+      for (int i = 64; i < 96; i++) {
         EEPROM.write(i + 1, home_password[i]);
       }
       EEPROM.commit();
