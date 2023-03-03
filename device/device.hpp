@@ -17,14 +17,16 @@
 
 #include <string.h>
 #include <math.h>
-#include <Adafruit_Fingerprint.h>
 #include <pico/stdlib.h>
 #include <hardware/gpio.h>
 #include <hardware/sync.h>
 #include "hardware/structs/ioqspi.h"
 #include "hardware/structs/sio.h"
-#include "Servo.h"
-#include "WiFi.h"
+
+#include <Adafruit_Fingerprint.h>
+#include <EEPROM.h>
+#include <Servo.h>
+#include <WiFi.h>
 #include "WiFiClient.h"
 #include "WiFiServer.h"
 #include "WiFiUdp.h"
