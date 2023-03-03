@@ -96,8 +96,8 @@ void setup(void)
   }
   else {
     AP_MODE = false;
-    byte ssid_bytes[64] = malloc(sizeof(byte) * 32);
-    byte password_bytes[64] = malloc(sizeof(byte) * 64);
+    byte *ssid_bytes = malloc(sizeof(byte) * 32);
+    byte *password_bytes = malloc(sizeof(byte) * 64);
 
     if (ssid_bytes == NULL || password_bytes == NULL) {
     // Failed to allocate memory ?
@@ -130,7 +130,7 @@ void setup(void)
     else {
       // add attempts later but for now we will just continue trying forever until we connect. 
       while (true) { 
-        char connect = connect_wifi(ssid.c_str(), password.c_str());
+        char connect = connect_wifi((char *)ssid.c_str(), (char *)password.c_str());
         if (connect == 1) {
           wifi_status = WIFI_CONNECTED;
           break;
@@ -285,10 +285,10 @@ void loop(void)
       if (!first) {
         EEPROM.write(0, 1);
       }
-      for (int i = 0; i < 32) {
+      for (int i = 0; i < 32; i++) {
         EEPROM.write(i + 1, home_ssid[i]);
       }
-      for (int i = 64; j < 96) {
+      for (int i = 64; j < 96; j++) {
         EEPROM.write(i + 1, home_password[i]);
       }
       EEPROM.commit();
