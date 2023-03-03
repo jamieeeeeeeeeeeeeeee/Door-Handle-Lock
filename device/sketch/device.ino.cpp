@@ -253,7 +253,7 @@ void loop(void)
       AP_MODE = false;
       server.close();
       WiFi.softAPdisconnect(true);
-      WiFi.begin(home_ssid, home_password); //change this later to work with connect_wifi...   
+      WiFi.begin("logan", "rob12345"); //change this later to work with connect_wifi...   
       
       timeout = timeout > 30 ? timeout : 30; // 30 * 500 = 15 seconds, reasonable time
 
