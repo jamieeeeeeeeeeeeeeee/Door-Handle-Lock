@@ -87,9 +87,9 @@ void setup(void)
   // EEPROM setup
   addr = 0;
   EEPROM.begin(256); // 256 bytes of EEPROM (1 for being aware of first time setup, 32 SSID + 64 password) some more for later
-  byte first = EEPROM.read(addr);
+  //byte first = EEPROM.read(addr);
 
-  if (first == 0) {
+  /*if (first == 0) {
     AP_MODE = true;
     WiFi.mode(WIFI_STA);
     WiFi.softAP("Door Lock - " + mac.substring(0, 6)); // leave password empty for open AP
@@ -113,15 +113,15 @@ void setup(void)
       password_bytes[i] = EEPROM.read(addr++);
     }
 
-    String ssid = String((char *)ssid_bytes);
-    String password = String((char *)password_bytes);
+    String ssid = String((char *)ssid_bytes); 
+    String password = String((char *)password_bytes); 
 
     if (ssid == "" || password == "") {
       // first time = true;
     }
     else {
       // add attempts later but for now we will just continue trying forever until we connect. 
-      while (true) {
+      while (true) { 
         char connect = connect_wifi((char *)ssid.c_str(), (char *)password.c_str());
         if (connect == 1) {
           wifi_status = WIFI_CONNECTED;
@@ -133,7 +133,7 @@ void setup(void)
       }
     }
   }
-
+*/
   // Display setup
   graphics.clear();
   BLACK = graphics.create_pen(0, 0, 0);

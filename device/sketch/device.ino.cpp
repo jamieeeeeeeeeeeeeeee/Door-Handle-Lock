@@ -105,9 +105,9 @@ void setup(void)
   // EEPROM setup
   addr = 0;
   EEPROM.begin(256); // 256 bytes of EEPROM (1 for being aware of first time setup, 32 SSID + 64 password) some more for later
-  byte first = EEPROM.read(addr);
+  //byte first = EEPROM.read(addr);
 
-  if (first == 0) {
+  /*if (first == 0) {
     AP_MODE = true;
     WiFi.mode(WIFI_STA);
     WiFi.softAP("Door Lock - " + mac.substring(0, 6)); // leave password empty for open AP
@@ -151,7 +151,7 @@ void setup(void)
       }
     }
   }
-
+*/
   // Display setup
   graphics.clear();
   BLACK = graphics.create_pen(0, 0, 0);
