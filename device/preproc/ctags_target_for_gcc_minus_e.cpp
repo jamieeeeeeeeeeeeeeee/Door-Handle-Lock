@@ -87,15 +87,15 @@ void setup(void)
   // EEPROM setup
   addr = 0;
   EEPROM.begin(256); // 256 bytes of EEPROM (1 for being aware of first time setup, 32 SSID + 64 password) some more for later
-  //byte first = EEPROM.read(addr);
+  byte first = EEPROM.read(addr);
+  EEPROM.write(0, 0); // set to 0 for debugging..
 
-  /*if (first == 0) {
+  if (first == 0) {
     AP_MODE = true;
     WiFi.mode(WIFI_STA);
     WiFi.softAP("Door Lock - " + mac.substring(0, 6)); // leave password empty for open AP
     server.begin();
-  }
-  else {
+  } else {
     AP_MODE = false;
     byte ssid_bytes[32];
     byte password_bytes[64];
@@ -113,27 +113,25 @@ void setup(void)
       password_bytes[i] = EEPROM.read(addr++);
     }
 
-    String ssid = String((char *)ssid_bytes); 
-    String password = String((char *)password_bytes); 
+    String ssid = String((char *)ssid_bytes);
+    String password = String((char *)password_bytes);
 
     if (ssid == "" || password == "") {
       // first time = true;
-    }
-    else {
+    } else {
       // add attempts later but for now we will just continue trying forever until we connect. 
-      while (true) { 
+      while (true) {
         char connect = connect_wifi((char *)ssid.c_str(), (char *)password.c_str());
         if (connect == 1) {
           wifi_status = WIFI_CONNECTED;
           break;
-        }
-        else {
+        } else {
           wifi_status = WIFI_NOT_CONNECTED;
         }
       }
     }
   }
-*/
+
   // Display setup
   graphics.clear();
   BLACK = graphics.create_pen(0, 0, 0);
@@ -296,20 +294,16 @@ void loop(void)
       server.begin();
       finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x02 /*!< Blue LED*/);
       delay(500);
-    }
-    else {
+    } else {
       size_t read = client.readBytes(packet, 5);
       if (read == 0) {
         //unlock();
-      }
-      else if (read != 5) {
+      }else if (read != 5) {
         // unknown command
-      }
-      else {
+      } else {
         if (memcmp(packet, "UNLCK", 5) == 0) {
           unlock();
-        }
-        else if (memcmp(packet, "IMAGE", 5) == 0) {
+        } else if (memcmp(packet, "IMAGE", 5) == 0) {
           while (client.connected()) {
             if (client.available()) {
               size_t read = client.readBytes(packet, 255);
@@ -336,8 +330,7 @@ void loop(void)
         }
       }
     }
-  }
-  else {
+  } else {
     client = server.available();
   }
 
@@ -346,26 +339,22 @@ void loop(void)
     if (finger.templateCount == 0) {
       // No fingerprints stored, so enroll a new one
       while(! fingerprint_enroll());
-    }
-    else {
+    } else {
       // We need confirmation from an existing fingerprint before being able to enroll a new one
       if (fingerprint_get_id() > 0) {
         finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x02 /*!< Blue LED*/);
         while(! fingerprint_enroll() );
-      }
-      else {
+      } else {
         //LED_OFF;
       }
     }
-  }
-  else {
+  } else {
     p = fingerprint_get_id();
     if (p == -1) {
       finger.LEDcontrol(0x04 /*!< Always off*/, 0, (0x01 /*!< Red LED*/));
       finger.LEDcontrol(0x04 /*!< Always off*/, 0, (0x02 /*!< Blue LED*/));
       finger.LEDcontrol(0x04 /*!< Always off*/, 0, (0x03 /*!< Purple LEDpassword*/));
-    }
-    else if (p > 0) {
+    } else if (p > 0) {
       unlock();
     }
   }
