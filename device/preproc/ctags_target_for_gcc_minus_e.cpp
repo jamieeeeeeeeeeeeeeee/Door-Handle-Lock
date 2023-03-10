@@ -44,7 +44,6 @@ void unlock(void) {
     delay(1); // waits 1ms for the servo to reach the position
   }
 }
-
 char connect_wifi(char *name, char *pass) {
   // Connect to Wi-Fi
   WiFi.begin(name, pass);
@@ -76,7 +75,7 @@ char connect_wifi(char *name, char *pass) {
   return 1;
 }
 
-// Setup 
+// Setup
 void setup(void)
 {
   // Misc setup

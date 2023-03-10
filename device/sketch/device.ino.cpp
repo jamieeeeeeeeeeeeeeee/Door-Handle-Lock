@@ -34,19 +34,19 @@ int addr;
 // Unlock servo function
 #line 33 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void unlock(void);
-#line 47 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 46 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 char connect_wifi(char *name, char *pass);
-#line 79 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 78 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void setup(void);
-#line 197 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 196 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void loop(void);
-#line 363 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 362 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 uint8_t fingerprint_enroll(void);
-#line 508 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 507 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 uint8_t fingerprint_get_id(void);
-#line 578 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 577 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void draw_blank_screen(void);
-#line 584 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 583 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void draw_navbar(void);
 #line 33 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void unlock(void) {
@@ -62,7 +62,6 @@ void unlock(void) {
     delay(1);                       // waits 1ms for the servo to reach the position
   }
 }
-
 char connect_wifi(char *name, char *pass) {
   // Connect to Wi-Fi
   WiFi.begin(name, pass);
@@ -94,7 +93,7 @@ char connect_wifi(char *name, char *pass) {
   return 1;
 }
 
-// Setup 
+// Setup
 void setup(void)
 {
   // Misc setup
