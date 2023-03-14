@@ -4,10 +4,12 @@
 // Setup
 void setup(void)
 {
-  // Misc setup
-  pinMode((32u), OUTPUT);
+  // Making sure memory used for variables is cleared
   memset(last_pen, 0, sizeof(last_pen));
   memset(packet, 0, sizeof(packet));
+
+  // Pico LED
+  pinMode((32u), OUTPUT);
 
   // EEPROM setup
   addr = 0;
@@ -15,7 +17,7 @@ void setup(void)
   byte first = EEPROM.read(addr);
   EEPROM.write(0, 0); // set to 0 for debugging..
 
-  if (first == 1 && false) {
+  if (first == 0) {
     AP_MODE = true;
     WiFi.mode(WIFI_STA);
     WiFi.softAP("Door Lock - " + mac.substring(0, 6)); // leave password empty for open AP
@@ -108,11 +110,10 @@ void setup(void)
   finger.getTemplateCount();
   if (finger.templateCount == 0) {
     // No fingerprints stored
-    while (true)
-      while (finger.getImage() != 0x02 /*!< No finger on the sensor*/) {
-        finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x03 /*!< Purple LEDpassword*/);
-      }
-      while(! fingerprint_enroll() );
+    while (finger.getImage() != 0x02 /*!< No finger on the sensor*/) {
+    finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x03 /*!< Purple LEDpassword*/);
+    }
+    while(! fingerprint_enroll() );
   } else {
     // Fingerprints stored
     finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x02 /*!< Blue LED*/);

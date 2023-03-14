@@ -5,27 +5,29 @@
 // Setup
 #line 4 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void setup(void);
-#line 122 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 123 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void loop(void);
-#line 281 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 282 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 uint8_t fingerprint_enroll(void);
-#line 425 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 426 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 uint8_t fingerprint_get_id(void);
-#line 495 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 496 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void display_blank(void);
-#line 500 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 501 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void display_navbar(void);
-#line 534 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 535 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void servo_unlock(void);
-#line 549 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 550 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 char wifi_connect(char *name, char *pass);
 #line 4 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void setup(void)
 {
-  // Misc setup
-  pinMode(PICO_LED, OUTPUT);
+  // Making sure memory used for variables is cleared
   memset(last_pen, 0, sizeof(last_pen));
   memset(packet, 0, sizeof(packet));
+
+  // Pico LED
+  pinMode(PICO_LED, OUTPUT);
 
   // EEPROM setup
   addr = 0;
@@ -33,7 +35,7 @@ void setup(void)
   byte first = EEPROM.read(addr);
   EEPROM.write(0, 0); // set to 0 for debugging..
   
-  if (first == 1 && false) {
+  if (first == 0) {
     AP_MODE = true;
     WiFi.mode(WIFI_STA);
     WiFi.softAP("Door Lock - " + mac.substring(0, 6)); // leave password empty for open AP
@@ -126,11 +128,10 @@ void setup(void)
   finger.getTemplateCount();
   if (finger.templateCount == 0) {
     // No fingerprints stored
-    while (true)
-      while (finger.getImage() != FINGERPRINT_NOFINGER) {
-        LED_SETUP;
-      }
-      while(! fingerprint_enroll() );
+    while (finger.getImage() != FINGERPRINT_NOFINGER) {
+    LED_SETUP;
+    }
+    while(! fingerprint_enroll() );
   } else {
     // Fingerprints stored
     LED_SUCCESS;
