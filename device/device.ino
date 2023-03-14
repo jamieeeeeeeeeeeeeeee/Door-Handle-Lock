@@ -148,7 +148,7 @@ void loop(void) {
       AP_MODE = false;
       server.close();
       WiFi.softAPdisconnect(true);
-      wifi_connect(home_ssid, home_password) //change this later to work with wifi_connect...   
+      wifi_connect(home_ssid, home_password); //change this later to work with wifi_connect...   
       
       timeout = timeout > 30 ? timeout : 30; // 30 * 500 = 15 seconds, reasonable time
 
