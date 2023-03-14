@@ -64,7 +64,7 @@ void setup(void)
   WHITE = graphics.create_pen(255, 255, 255);
   PRIMARY = graphics.create_pen(176, 196, 222);
   display_blank();
-  dispaly_navbar();
+  display_navbar();
   
   // Wi-Fi setup
   AP_MODE = true;
