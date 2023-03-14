@@ -14,8 +14,6 @@ void setup(void)
   // EEPROM setup
   addr = 0;
   EEPROM.begin(256); // 256 bytes of EEPROM (1 for being aware of first time setup, 32 SSID + 64 password) some more for later
-  EEPROM.write(0, 0); // set to 0 for debugging..
-  EEPROM.commit(); // comment this out once sure it is set to 0 otherwise we will eat up the EEPROM lifespan
   byte first = EEPROM.read(addr);
 
   /*if (first == 0 || true) {
@@ -66,14 +64,8 @@ void setup(void)
   BLACK = graphics.create_pen(0, 0, 0);
   WHITE = graphics.create_pen(255, 255, 255);
   PRIMARY = graphics.create_pen(176, 196, 222);
-
-  display.set_backlight(255);
-  display.update(&graphics);
-  graphics.set_pen(BLACK);
-  graphics.rectangle(Rect(0, 0, 320, 240));
-  graphics.set_pen(PRIMARY);
-  graphics.text("Door Lock", Point(10, 10), true, 2);
-  display.update(&graphics);
+  display_blank();
+  display_navbar();
 
   // Wi-Fi setup
   AP_MODE = true;
@@ -93,12 +85,13 @@ void setup(void)
   finger.begin(57600);
   finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x03 /*!< Purple LEDpassword*/);
 
+  // Check if sensor is connected successfully
   if (finger.verifyPassword()) {
     // Found the sensor
     finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x03 /*!< Purple LEDpassword*/);
   } else {
     // Failed to find sensor
-    // Pico LED blink is our error indicator in this case (since we couldn't find the sensor)
+    // Pico LED blink is our error indicator in this case (since we can't use the sensor)
     while (true) {
       gpio_put((32u), 1);
       sleep_ms(100);
@@ -107,9 +100,11 @@ void setup(void)
     }
   }
 
+  // Tell sensor to find its stored details
   finger.getParameters();
-
   finger.getTemplateCount();
+
+  // Access these stored details ( getParameters and getTemplateCount are blocking :) )
   if (finger.templateCount == 0) {
     // No fingerprints stored
     while (finger.getImage() != 0x02 /*!< No finger on the sensor*/) {
@@ -154,7 +149,7 @@ void loop(void) {
       AP_MODE = false;
       server.close();
       WiFi.softAPdisconnect(true);
-      WiFi.begin("logan", "rob12345"); //change this later to work with wifi_connect...   
+      wifi_connect(home_ssid, home_password); //change this later to work with wifi_connect...   
 
       timeout = timeout > 30 ? timeout : 30; // 30 * 500 = 15 seconds, reasonable time
 
@@ -192,7 +187,7 @@ void loop(void) {
         return;
       }
 
-      byte first = EEPROM.read(0);
+      /*byte first = EEPROM.read(0);
       if (!first) {
         EEPROM.write(0, 1);
       }
@@ -202,7 +197,7 @@ void loop(void) {
       for (int i = 64; i < 96; i++) {
         EEPROM.write(i + 1, home_password[i]);
       }
-      EEPROM.commit();
+      EEPROM.commit();*/
       // get my ip address
       IPAddress ip = WiFi.localIP();
 
@@ -496,7 +491,8 @@ uint8_t fingerprint_get_id(void) {
 }
 
 // Display helper function defintions
-void display_blank(void) { // I think this can be made better
+void display_blank(void) {
+  graphics.clear();
   graphics.set_pen(BLACK);
   graphics.rectangle(Rect(0, 0, 320, 240));
   display.update(&graphics);
