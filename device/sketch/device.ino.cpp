@@ -5,19 +5,19 @@
 // Setup
 #line 4 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void setup(void);
-#line 123 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 125 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void loop(void);
-#line 282 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 284 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 uint8_t fingerprint_enroll(void);
-#line 426 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 428 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 uint8_t fingerprint_get_id(void);
-#line 496 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 498 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void display_blank(void);
-#line 501 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 503 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void display_navbar(void);
-#line 535 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 537 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void servo_unlock(void);
-#line 550 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 552 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 char wifi_connect(char *name, char *pass);
 #line 4 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void setup(void)
@@ -32,10 +32,11 @@ void setup(void)
   // EEPROM setup
   addr = 0;
   EEPROM.begin(256); // 256 bytes of EEPROM (1 for being aware of first time setup, 32 SSID + 64 password) some more for later
-  byte first = EEPROM.read(addr);
   EEPROM.write(0, 0); // set to 0 for debugging..
+  EEPROM.commit(); // comment this out once sure it is set to 0 otherwise we will eat up the EEPROM lifespan
+  byte first = EEPROM.read(addr);
   
-  if (first == 0) {
+  /*if (first == 0 || true) {
     AP_MODE = true;
     WiFi.mode(WIFI_STA);
     WiFi.softAP("Door Lock - " + mac.substring(0, 6)); // leave password empty for open AP
@@ -76,7 +77,8 @@ void setup(void)
       }
     }
   }
-
+  */
+ 
   // Display setup
   graphics.clear();
   BLACK = graphics.create_pen(0, 0, 0);
