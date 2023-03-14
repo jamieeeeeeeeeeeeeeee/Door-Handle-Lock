@@ -45,7 +45,7 @@ void setup(void)
     } else {
       // add attempts later but for now we will just continue trying forever until we connect. 
       while (true) { 
-        char connect = connect_wifi((char *)ssid.c_str(), (char *)password.c_str());
+        char connect = wifi_connect((char *)ssid.c_str(), (char *)password.c_str());
         if (connect == 1) {
           wifi_status = WIFI_CONNECTED;
           break;
@@ -122,7 +122,7 @@ void setup(void)
 void loop(void) {
   if (client) {
     if (AP_MODE) {
-      unlock();
+      servo_unlock();
       display_blank();
       graphics.set_pen(WHITE);
       graphics.text("Connecting to", Point(10, 10), true, 2);
@@ -150,7 +150,7 @@ void loop(void) {
       AP_MODE = false;
       server.close();
       WiFi.softAPdisconnect(true);
-      WiFi.begin("logan", "rob12345"); //change this later to work with connect_wifi...   
+      WiFi.begin("logan", "rob12345"); //change this later to work with wifi_connect...   
       
       timeout = timeout > 30 ? timeout : 30; // 30 * 500 = 15 seconds, reasonable time
 
@@ -214,12 +214,12 @@ void loop(void) {
     } else {
       size_t read = client.readBytes(packet, 5);
       if (read == 0) {
-        //unlock();
+        //servo_unlock();
       } else if (read != 5) {
         // unknown command
       } else {
         if (memcmp(packet, "UNLCK", 5) == 0) {
-          unlock();
+          servo_unlock();
         } else if (memcmp(packet, "IMAGE", 5) == 0) {
           while (client.connected()) {
             if (client.available()) {
@@ -271,7 +271,7 @@ void loop(void) {
       LED_OFF(LED_BLUE);
       LED_OFF(LED_PURPLE);
     } else if (p > 0) {
-      unlock();
+      servo_unlock();
     }
   }
 }
