@@ -1,82 +1,4 @@
 #include "device.hpp"
-using namespace pimoroni;
-
-// Bootsel, fingerprint sensor and servo globals
-__Bootsel BOOTSEL;
-SerialPIO mySerial(0, 1);
-Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
-Servo servo;
-
-// Wi-Fi globals
-WiFiServer server(9999);
-WiFiClient client;
-bool AP_MODE = true;
-uint8_t packet[255];
-int wifi_status = WIFI_NOT_CONNECTED;
-int timeout = 30;
-int timeout_safety = 8;
-String mac;
-String ssid; // tidy this up later
-String ssid; // tidy this up later
-
-// Display globals
-ST7789 display(320, 240, ROTATE_0, false, get_spi_pins(BG_SPI_FRONT));
-PicoGraphics_PenRGB565 graphics(display.width, display.height, nullptr);
-uint8_t last_pen[3];
-Pen BLACK;
-Pen WHITE;
-Pen PRIMARY;
-
-// EEPROM globals
-int addr;
-
-// EEPROM globals
-int addr;
-
-// Unlock servo function
-void unlock(void) {
-  // Note that this is a blocking call, the bootsell button will not be checked until the servo has completed its movement!
-  for (int pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-    // in steps of 1 degree
-    servo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(1);                       // waits 1ms for the servo to reach the position
-  }    
-  delay(1000);
-  for (int pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-    servo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(1);                       // waits 1ms for the servo to reach the position
-  }
-}
-char connect_wifi(char *name, char *pass) {
-  // Connect to Wi-Fi
-  WiFi.begin(name, pass);
-  timeout = timeout > 30 ? timeout : 30; // 30 * 500 = 15 seconds, reasonable time
-
-  while (WiFi.status() != WL_CONNECTED and timeout > 0) {
-    // temp blocking loop - move to second core
-    // otherwise if this hangs forever, the
-    // rest of the program will not run
-    delay(500); 
-    LED_SETUP;
-    timeout--;
-    if (WiFi.status() == WL_CONNECT_FAILED) {
-      timeout = 0; // important not for breaking but for resetting time out value correctly
-      break;
-    }
-  }
-
-  if (WiFi.status() != WL_CONNECTED) {
-    WiFi.disconnect(); // cancel connection attempt, if any
-    // in the case of multiple retries, that are caused by
-    // the connection simply being slow, we will increase the timeout attempts
-    if (timeout == 0) {
-      timeout = 30 + timeout_safety;
-      timeout_safety += 8;
-    }
-    return 0;
-  } 
-  return 1;
-}
 
 // Setup
 void setup(void)
@@ -197,13 +119,11 @@ void setup(void)
 }
 
 // Main loop
-void loop(void)
-{
+void loop(void) {
   if (client) {
-    if (AP_MODE)
-    {
+    if (AP_MODE) {
       unlock();
-      draw_blank_screen();
+      display_blank();
       graphics.set_pen(WHITE);
       graphics.text("Connecting to", Point(10, 10), true, 2);
       display.update(&graphics);
@@ -217,11 +137,6 @@ void loop(void)
         if (packet[i] == '?') {
           packet[i] = 0;
           question = i;
-        }
-        else if (packet[i] == ';') {
-          packet[i] = 0;
-          semicolon = i; 
-          break;
         }
       }
       char *home_ssid = (char *)packet;
@@ -266,7 +181,7 @@ void loop(void)
         server.begin();
         LED_ERROR;
         delay(500);
-        draw_blank_screen();
+        display_blank();
         graphics.set_pen(WHITE);
         graphics.text("Failed to connect, please make sure your details are correct. Rejoin the Door Lock xx:xx network and try sending them again.", Point(10, 10), true, 2);
         display.update(&graphics);
@@ -287,7 +202,7 @@ void loop(void)
       // get my ip address
       IPAddress ip = WiFi.localIP();
             
-      draw_blank_screen();
+      display_blank();
       graphics.set_pen(WHITE);
       graphics.text("Connected with IP address", Point(10, 10), true, 2);
       graphics.text(ip.toString().c_str(), Point(10, 70), true, 2);
@@ -300,7 +215,7 @@ void loop(void)
       size_t read = client.readBytes(packet, 5);
       if (read == 0) {
         //unlock();
-      }else if (read != 5) {
+      } else if (read != 5) {
         // unknown command
       } else {
         if (memcmp(packet, "UNLCK", 5) == 0) {
@@ -337,17 +252,16 @@ void loop(void)
   }
 
   int p = 0;
-  if ( get_bootsel_button() ) {
+  if (get_bootsel_button()) {
     if (finger.templateCount == 0) {
       // No fingerprints stored, so enroll a new one
-      while(! fingerprint_enroll());
+      while(!fingerprint_enroll());
     } else {
       // We need confirmation from an existing fingerprint before being able to enroll a new one
       if (fingerprint_get_id() > 0) {
         LED_SUCCESS;
-        while(! fingerprint_enroll() );
+        while(!fingerprint_enroll() );
       } else {
-        //LED_OFF;
       }
     }
   } else {
@@ -362,6 +276,7 @@ void loop(void)
   }
 }
 
+// << Helper function definitions >> //
 // Fingerprint helper function definitions
 uint8_t fingerprint_enroll(void) {
   int p = -1;
@@ -507,7 +422,6 @@ uint8_t fingerprint_enroll(void) {
   LED_SUCCESS;
   return true;
 }
-
 uint8_t fingerprint_get_id(void) {
   uint8_t p = finger.getImage();
   switch (p) {
@@ -578,13 +492,12 @@ uint8_t fingerprint_get_id(void) {
 }
 
 // Display helper function defintions
-void draw_blank_screen(void) { // I think this can be made better
+void display_blank(void) { // I think this can be made better
   graphics.set_pen(BLACK);
   graphics.rectangle(Rect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT));
   display.update(&graphics);
 }
-
-void draw_navbar(void) {
+void display_navbar(void) {
   graphics.set_pen(PRIMARY);
   graphics.rectangle(Rect(0, 0, DISPLAY_WIDTH, int(DISPLAY_HEIGHT / 8)));
   graphics.set_pen(BLACK);
@@ -617,3 +530,49 @@ void draw_navbar(void) {
     display.update(&graphics);
 }
 
+// Servo helper function definitions
+void servo_unlock(void) {
+  // Note that this is a blocking call, the bootsell button will not be checked until the servo has completed its movement!
+  for (int pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+    // in steps of 1 degree
+    servo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(1);                       // waits 1ms for the servo to reach the position
+  }    
+  delay(1000);
+  for (int pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+    servo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(1);                       // waits 1ms for the servo to reach the position
+  }
+}
+
+// Wifi helper function definitions
+char wifi_connect(char *name, char *pass) {
+  // Connect to Wi-Fi
+  WiFi.begin(name, pass);
+  timeout = timeout > 30 ? timeout : 30; // 30 * 500 = 15 seconds, reasonable time
+
+  while (WiFi.status() != WL_CONNECTED and timeout > 0) {
+    // temp blocking loop - move to second core
+    // otherwise if this hangs forever, the
+    // rest of the program will not run
+    delay(500); 
+    LED_SETUP;
+    timeout--;
+    if (WiFi.status() == WL_CONNECT_FAILED) {
+      timeout = 0; // important not for breaking but for resetting time out value correctly
+      break;
+    }
+  }
+
+  if (WiFi.status() != WL_CONNECTED) {
+    WiFi.disconnect(); // cancel connection attempt, if any
+    // in the case of multiple retries, that are caused by
+    // the connection simply being slow, we will increase the timeout attempts
+    if (timeout == 0) {
+      timeout = 30 + timeout_safety;
+      timeout_safety += 8;
+    }
+    return 0;
+  } 
+  return 1;
+}
