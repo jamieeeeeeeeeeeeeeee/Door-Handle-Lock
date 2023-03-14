@@ -155,4 +155,4 @@ void display_navbar(void);
 void servo_unlock(void);
 
 // Wi-Fi helper function prototypes
-void wifi_connect(char *name, char *pass);
+char wifi_connect(char *name, char *pass);
