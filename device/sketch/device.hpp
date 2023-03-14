@@ -72,14 +72,6 @@ enum {
 #define CONFIDENCE_THRESHOLD 50
 #define PICO_LED LED_BUILTIN
 
-// Fingerprint helper function prototypes
-uint8_t fingerprint_enroll(void);
-uint8_t fingerprint_get_id(void);
-
-// Display helper function prototypes
-void draw_blank_screen(void);
-void draw_navbar(void);
-
 // Define temporary bootsel button
 static bool __no_inline_not_in_flash_func(get_bootsel_button)() {
     const uint CS_PIN_INDEX = 1;
@@ -113,6 +105,55 @@ static bool __no_inline_not_in_flash_func(get_bootsel_button)() {
     return button_state;
 }
 
+// << Globals >> //
+using namespace pimoroni;
+
+// Bootsel globals 
 __Bootsel::operator bool() {
     return get_bootsel_button();
 }
+__Bootsel BOOTSEL;
+
+// Fingerprint globals
+SerialPIO mySerial(0, 1);
+Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
+
+// Display globals
+ST7789 display(320, 240, ROTATE_0, false, get_spi_pins(BG_SPI_FRONT));
+PicoGraphics_PenRGB565 graphics(display.width, display.height, nullptr);
+uint8_t last_pen[3];
+Pen BLACK;
+Pen WHITE;
+Pen PRIMARY;
+
+// Servo globals
+Servo servo;
+
+// Wi-Fi globals
+WiFiServer server(9999);
+WiFiClient client;
+bool AP_MODE = true;
+uint8_t packet[255];
+int wifi_status = WIFI_NOT_CONNECTED;
+int timeout = 30;
+int timeout_safety = 8;
+String mac;
+String ssid; // tidy this up later
+
+// EEPROM globals
+int addr = 0;
+
+// << Helper function prototypes >> //
+// Fingerprint helper function prototypes
+uint8_t fingerprint_enroll(void);
+uint8_t fingerprint_get_id(void);
+
+// Display helper function prototypes
+void display_blank(void);
+void display_navbar(void);
+
+// Servo helper function prototypes
+void servo_unlock(void);
+
+// Wi-Fi helper function prototypes
+char wifi_connect(char *name, char *pass);
