@@ -33,7 +33,7 @@ void setup(void)
   byte first = EEPROM.read(addr);
   EEPROM.write(0, 0); // set to 0 for debugging..
   
-  if (first == 1) {
+  if (first == 1 && false) {
     AP_MODE = true;
     WiFi.mode(WIFI_STA);
     WiFi.softAP("Door Lock - " + mac.substring(0, 6)); // leave password empty for open AP
