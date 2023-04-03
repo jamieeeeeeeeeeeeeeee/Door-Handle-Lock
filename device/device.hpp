@@ -25,6 +25,8 @@
 #include <hardware/sync.h>
 #include <hardware/structs/ioqspi.h>
 #include <hardware/structs/sio.h>
+#include <FreeRTOS.h>
+#include <semphr.h>
 
 // Arduino - Pico libraries
 #include <EEPROM.h>
@@ -112,6 +114,24 @@ static bool __no_inline_not_in_flash_func(get_bootsel_button)() {
     return button_state;
 }
 
+class Mutex {
+  public:
+    Mutex() {
+      mutex = xSemaphoreCreateMutex();
+    }
+
+    void lock() {
+      xSemaphoreTake(mutex, portMAX_DELAY);
+    }
+
+    void unlock() {
+      xSemaphoreGive(mutex);
+    }
+
+  private:
+    SemaphoreHandle_t mutex;
+};
+
 // *********************************//
 //              Globals             //
 // *********************************//
@@ -163,18 +183,17 @@ uint8_t fingerprint_get_id(void);
 void display_blank(void);
 void display_navbar(void);
 void display_setting_up(void);
-// std::mutex display_mutex; // Mutex for locking shared display functions.
+Mutex display_mutex{}; // Mutex for locking shared display functions.
 
 // Servo helper function prototypes
 void servo_unlock(void);
-// std::mutex servo_mutex; // Mutex for locking shared servo functions.
+Mutex servo_unlock{}; // Mutex for locking shared servo functions.
 
 // Wi-Fi helper function prototypes
 char wifi_connect(char *name, char *pass);
 char wifi_first_time_setup(void);
 char wifi_second_time_setup(void);
 // No mutex required as only Core 1 ever touches the Wi-Fi functions.
-
 
 typedef struct device {
   const char* name;
@@ -197,4 +216,3 @@ std::vector<device> devices = {
 #define SERVO_SETUP devices[2].status
 #define EEPROM_SETUP devices[3].status
 #define WIFI_SETUP devices[4].status
-
