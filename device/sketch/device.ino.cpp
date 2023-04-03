@@ -6,7 +6,7 @@
 // Core 0 Setup - Core 0 handles everything but Wi-Fi and EEPROM! (Fingerprint, display, servo..)
 #line 5 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void setup(void);
-#line 67 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 68 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void setup1(void);
 #line 101 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void loop(void);
@@ -90,6 +90,7 @@ void setup(void) {
     // Fingerprints stored
     LED_SUCCESS;
   }
+  display_setting_up();
 }
 
 // Core 1 Setup - Core 1 handles everything Wi-Fi and EEPROM (AP mode, TCP server, connecting to home network..)
@@ -123,7 +124,6 @@ void setup1(void) {
     wifi_second_time_setup();
     WIFI_SETUP = SETUP_SUCCESS;
   }
-  display_setting_up();
 }
 
 // Core 0 Main loop 
