@@ -177,7 +177,7 @@ char wifi_second_time_setup(void);
 
 
 typedef struct device {
-  char* name;
+  const char* name;
   char status;
 } device;
 
