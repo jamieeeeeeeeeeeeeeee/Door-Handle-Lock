@@ -93,7 +93,7 @@ void setup1(void) {
   }
   EEPROM.commit();
   #endif
-
+  // ummm
   // WiFi setup based on EEPROM that we read
   if (first == 0) {
     WIFI_SETUP = SETUP_FAILED;
