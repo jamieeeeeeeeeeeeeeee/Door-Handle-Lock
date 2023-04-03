@@ -192,8 +192,9 @@ std::vector<device> devices = {
   {"WiFi Connection", SETUP_WAITING}
 }; // make sure this vector is never resized or reset
 
-#define DISPLAY_SETUP devices[0]
-#define SENSOR_SETUP devices[1]
-#define SERVO_SETUP devices[2]
-#define EEPROM_SETUP devices[3]
-#define WIFI_SETUP devices[4]
+#define DISPLAY_SETUP devices[0].status
+#define SENSOR_SETUP devices[1].status
+#define SERVO_SETUP devices[2].status
+#define EEPROM_SETUP devices[3].status
+#define WIFI_SETUP devices[4].status
+
