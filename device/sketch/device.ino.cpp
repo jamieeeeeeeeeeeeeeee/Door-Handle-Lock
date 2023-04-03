@@ -548,7 +548,7 @@ void display_setting_up(void) {
   graphics.rectangle(Rect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT));
   graphics.set_pen(PRIMARY);
   graphics.rectangle(Rect(0, 0, DISPLAY_WIDTH, int(DISPLAY_HEIGHT / 8)));
-  graphics.set_pen(BLACK);
+  graphics.set_pen(WHITE);
   graphics.text("Setting up", Point(5, 5), 200, 3);
 
   // now loop through devices_setup char vector

@@ -520,7 +520,7 @@ void display_setting_up(void) {
   graphics.rectangle(Rect(0, 0, 320, 240));
   graphics.set_pen(PRIMARY);
   graphics.rectangle(Rect(0, 0, 320, int(240 / 8)));
-  graphics.set_pen(BLACK);
+  graphics.set_pen(WHITE);
   graphics.text("Setting up", Point(5, 5), 200, 3);
 
   // now loop through devices_setup char vector
