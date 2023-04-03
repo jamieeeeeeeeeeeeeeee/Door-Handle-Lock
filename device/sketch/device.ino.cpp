@@ -22,13 +22,13 @@ void display_blank(void);
 void display_navbar(void);
 #line 512 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void display_setting_up(void);
-#line 550 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 551 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void servo_unlock(void);
-#line 569 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 570 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 char wifi_connect(char *name, char *pass);
-#line 597 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 598 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 char wifi_first_time_setup(void);
-#line 605 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 606 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 char wifi_second_time_setup(void);
 #line 5 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void setup(void) {
@@ -572,6 +572,7 @@ void display_setting_up(void) {
       graphics.text("...", Point(230, 40 + (i * 30)), 200, 2);
     }
   }
+  display.update(&graphics);
   //display_mutex.unlock();
 }
 

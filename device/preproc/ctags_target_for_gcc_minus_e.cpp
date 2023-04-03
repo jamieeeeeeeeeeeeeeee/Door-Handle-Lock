@@ -544,6 +544,7 @@ void display_setting_up(void) {
       graphics.text("...", Point(230, 40 + (i * 30)), 200, 2);
     }
   }
+  display.update(&graphics);
   //display_mutex.unlock();
 }
 
