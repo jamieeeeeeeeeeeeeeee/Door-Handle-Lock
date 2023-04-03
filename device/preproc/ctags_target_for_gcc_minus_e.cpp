@@ -533,11 +533,10 @@ void display_setting_up(void) {
     graphics.set_pen(WHITE);
     graphics.text("device1..", Point(5, 40 + (i * 30)), 200, 2);
     graphics.circle(Point(250, 50 + (i * 30)), 10);
-
-    if (devices_setup[i] == 0) {
+    if (devices_setup[i] == 1) {
       graphics.set_pen(GREEN);
       graphics.circle(Point(250, 50 + (i * 30)), 8);
-    } else if (devices_setup[i] == 1) {
+    } else if (devices_setup[i] == 2) {
       graphics.set_pen(RED);
       graphics.circle(Point(250, 50 + (i * 30)), 8);
     } else if (devices_setup[i] == 2) { } // do nothing..

@@ -22,13 +22,13 @@ void display_blank(void);
 void display_navbar(void);
 #line 513 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void display_setting_up(void);
-#line 549 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 548 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void servo_unlock(void);
-#line 568 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 567 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 char wifi_connect(char *name, char *pass);
-#line 596 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 595 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 char wifi_first_time_setup(void);
-#line 604 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
+#line 603 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 char wifi_second_time_setup(void);
 #line 5 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
 void setup(void) {
@@ -561,11 +561,10 @@ void display_setting_up(void) {
     graphics.set_pen(WHITE);
     graphics.text("device1..", Point(5, 40 + (i * 30)), 200, 2);
     graphics.circle(Point(250, 50 + (i * 30)), 10);
-
-    if (devices_setup[i] == 0) {
+    if (devices_setup[i] == SETUP_SUCCESS) {
       graphics.set_pen(GREEN);
       graphics.circle(Point(250, 50 + (i * 30)), 8);
-    } else if (devices_setup[i] == 1) {
+    } else if (devices_setup[i] == SETUP_FAILED) {
       graphics.set_pen(RED);
       graphics.circle(Point(250, 50 + (i * 30)), 8);
     } else if (devices_setup[i] == 2) { } // do nothing..
