@@ -61,6 +61,7 @@ void setup(void) {
     // Fingerprints stored
     LED_SUCCESS;
   }
+  display_setting_up();
 }
 
 // Core 1 Setup - Core 1 handles everything Wi-Fi and EEPROM (AP mode, TCP server, connecting to home network..)
@@ -94,7 +95,6 @@ void setup1(void) {
     wifi_second_time_setup();
     WIFI_SETUP = SETUP_SUCCESS;
   }
-  display_setting_up();
 }
 
 // Core 0 Main loop 
