@@ -26,7 +26,7 @@ void setup(void) {
   }
 
   // Set the baudrate for the sensor serial port
-  finger.begin(57600)
+  finger.begin(57600);
   LED_SETUP;
 
   // Check if sensor is connected successfully
@@ -73,11 +73,9 @@ void setup1(void) {
   
   // EEPROM setup
   addr = 0;
-  if (!EEPROM.begin(256)) { // 256 bytes of EEPROM (1 for being aware of first time setup, 32 SSID + 64 password) some more for later
-    EEPROM_SETUP = SETUP_FAILED;
-  } else {
-    EEPROM_SETUP = SETUP_SUCCESS;
-  }
+  EEPROM.begin(256); // 256 bytes of EEPROM (1 for being aware of first time setup, 32 SSID + 64 password) some more for later
+  EEPROM_SETUP = SETUP_FAILED;
+
   byte first = EEPROM.read(addr);
 
   // Quick reset of EEPROM during testing:
@@ -530,7 +528,7 @@ void display_setting_up(void) {
   // if device is 2 then draw a white ... (waiting)
 
   for (int i = 0; i < devices_setup.size(); i++) {
-    graphics.text(devices_setup[i].name, Point(5, 40 + (i * 30)), 200, 2);
+    graphics.text("device1..", Point(5, 40 + (i * 30)), 200, 2);
     graphics.set_pen(WHITE);
     graphics.circle(Point(250, 50 + (i * 30)), 10);
     if (devices_setup[i] == 0) {
