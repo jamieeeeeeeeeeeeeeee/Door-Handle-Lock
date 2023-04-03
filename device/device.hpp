@@ -134,6 +134,8 @@ uint8_t last_pen[3];
 Pen BLACK;
 Pen WHITE;
 Pen PRIMARY;
+Pen RED;
+Pen GREEN;
 
 // Servo globals
 Servo servo;

@@ -15,6 +15,8 @@ void setup(void) {
   BLACK = graphics.create_pen(0, 0, 0);
   WHITE = graphics.create_pen(255, 255, 255);
   PRIMARY = graphics.create_pen(245, 66, 66);
+  RED = graphics.create_pen(255, 0, 0);
+  GREEN = graphics.create_pen(0, 255, 0);
   display_blank();
   display_navbar();
   
@@ -484,8 +486,7 @@ void display_navbar(void) {
   graphics.rectangle(Rect(120, 5, 3, 19));
   graphics.set_pen(BLACK);
   std::string message;
-  switch(wifi_status)
-  {
+  switch(wifi_status) {
     case WIFI_CHIP_ERROR:
       message = "ERROR";
       break;
@@ -519,7 +520,7 @@ void display_setting_up(void) {
   graphics.set_pen(PRIMARY);
   graphics.rectangle(Rect(0, 0, DISPLAY_WIDTH, int(DISPLAY_HEIGHT / 8)));
   graphics.set_pen(BLACK);
-  graphics.text("Setting up", Point(5, 5), 50, 3);
+  graphics.text("Setting up", Point(5, 5), 200, 3);
 
   // now loop through devices_setup char vector
   // print the name and status of each device
@@ -531,17 +532,14 @@ void display_setting_up(void) {
     graphics.set_pen(WHITE);
     graphics.text("device1..", Point(5, 40 + (i * 30)), 200, 2);
     graphics.circle(Point(250, 50 + (i * 30)), 10);
+
     if (devices_setup[i] == 0) {
-      graphics.set_pen(PRIMARY);
+      graphics.set_pen(GREEN);
       graphics.circle(Point(250, 50 + (i * 30)), 8);
     } else if (devices_setup[i] == 1) {
-      graphics.set_pen(PRIMARY);
+      graphics.set_pen(RED);
       graphics.circle(Point(250, 50 + (i * 30)), 8);
-      graphics.text("ERROR", Point(230, 40 + (i * 30)), 200, 2);
-    } else if (devices_setup[i] == 2) {
-      graphics.set_pen(WHITE);
-      graphics.text("...", Point(230, 40 + (i * 30)), 200, 2);
-    }
+    } else if (devices_setup[i] == 2) { } // do nothing..
   }
   display.update(&graphics);
   //display_mutex.unlock();
