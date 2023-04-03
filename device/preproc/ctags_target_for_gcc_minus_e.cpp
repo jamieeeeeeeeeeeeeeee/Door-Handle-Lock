@@ -23,9 +23,9 @@ void setup(void) {
 
   // Attach the servo motor
   if (!servo.attach(28)) {
-    devices_setup[2] = '2';
+    devices[2].status = 2;
   } else {
-    devices_setup[2] = '1';
+    devices[2].status = 1;
   }
 
   // Set the baudrate for the sensor serial port
@@ -36,10 +36,10 @@ void setup(void) {
   if (finger.verifyPassword()) {
     // Found the sensor
     finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x03 /*!< Purple LEDpassword*/);
-    devices_setup[1] = '1';
+    devices[1].status = 1;
   } else {
     // Failed to find sensor
-    devices_setup[1] = '2';
+    devices[1].status = 2;
     // Pico LED blink is our error indicator in this case (since we can't use the sensor)
     /*while (true) {
       gpio_put(PICO_LED, 1);
@@ -78,7 +78,7 @@ void setup1(void) {
   // EEPROM setup
   addr = 0;
   EEPROM.begin(256); // 256 bytes of EEPROM (1 for being aware of first time setup, 32 SSID + 64 password) some more for later
-  devices_setup[3] = '2';
+  devices[3].status = 2;
 
   byte first = EEPROM.read(addr);
 
@@ -529,14 +529,14 @@ void display_setting_up(void) {
   // if device is 1 then draw a red frown :(
   // if device is 2 then draw a white ... (waiting)
 
-  for (int i = 0; i < devices_setup.size(); i++) {
+  for (int i = 0; i < devices.size(); i++) {
     graphics.set_pen(WHITE);
-    graphics.text("device1..", Point(5, 40 + (i * 30)), 200, 2);
+    graphics.text(devices[i].name, Point(5, 40 + (i * 30)), 200, 2);
     graphics.circle(Point(250, 50 + (i * 30)), 10);
-    if (devices_setup[i] == '1') {
+    if (devices[i].status == 1) {
       graphics.set_pen(GREEN);
       graphics.circle(Point(250, 50 + (i * 30)), 8);
-    } else if (devices_setup[i] == '2') {
+    } else if (devices[i].status == 2) {
       graphics.set_pen(RED);
       graphics.circle(Point(250, 50 + (i * 30)), 8);
     }

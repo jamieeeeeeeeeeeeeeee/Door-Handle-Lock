@@ -176,13 +176,26 @@ char wifi_first_time_setup(void);
 char wifi_second_time_setup(void);
 // No mutex required as only Core 1 ever touches the Wi-Fi functions.
 
-#define SETUP_WAITING '0'
-#define SETUP_SUCCESS '1'
-#define SETUP_FAILED '2'
-std::vector<char> devices_setup = {SETUP_SUCCESS, SETUP_FAILED, SETUP_SUCCESS, SETUP_WAITING, SETUP_WAITING}; // make sure this vector is never resized or reset
-#define DISPLAY_SETUP devices_setup[0]
-#define SENSOR_SETUP devices_setup[1]
-#define SERVO_SETUP devices_setup[2]
-#define EEPROM_SETUP devices_setup[3]
-#define WIFI_SETUP devices_setup[4]
-// blank space so github realises i made a change.
+
+typedef struct device {
+  const char* name;
+  char status;
+} device;
+
+#define SETUP_WAITING 0
+#define SETUP_SUCCESS 1
+#define SETUP_FAILED 2
+std::vector<device> devices = {
+  {"Display", SETUP_WAITING},
+  {"Fingerprint Sensor", SETUP_WAITING},
+  {"Door lock Motor", SETUP_WAITING},
+  {"EEPROM Memory", SETUP_WAITING},
+  {"WiFi Connection", SETUP_WAITING}
+}; // make sure this vector is never resized or reset
+
+#define DISPLAY_SETUP devices[0].status
+#define SENSOR_SETUP devices[1].status
+#define SERVO_SETUP devices[2].status
+#define EEPROM_SETUP devices[3].status
+#define WIFI_SETUP devices[4].status
+
