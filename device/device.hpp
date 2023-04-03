@@ -175,7 +175,7 @@ char wifi_second_time_setup(void);
 
 #define SETUP_SUCCESS 1
 #define SETUP_FAILED 2
-std::vector<char> devices_setup{1, 2, 1, 0, 0}; // make sure this vector is never resized or reset
+std::vector<char> devices_setup = {1, 2, 1, 0, 0}; // make sure this vector is never resized or reset
 #define DISPLAY_SETUP devices_setup[0]
 #define SENSOR_SETUP devices_setup[1]
 #define SERVO_SETUP devices_setup[2]
