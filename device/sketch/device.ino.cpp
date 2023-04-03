@@ -45,7 +45,7 @@ void setup(void) {
   WHITE = graphics.create_pen(255, 255, 255);
   PRIMARY = graphics.create_pen(245, 66, 66);
   RED = graphics.create_pen(255, 0, 0);
-  GREEN = graphics.create_pen(0, 255, 0);
+  GREEN = graphics.create_pen(255, 255, 0);
   display_blank();
   display_navbar();
   
@@ -562,12 +562,12 @@ void display_setting_up(void) {
     graphics.text("device1..", Point(5, 40 + (i * 30)), 200, 2);
     graphics.circle(Point(250, 50 + (i * 30)), 10);
     if (devices_setup[i] == SETUP_SUCCESS) {
-      graphics.set_pen(GREEN);
+      graphics.set_pen(BLACK);
       graphics.circle(Point(250, 50 + (i * 30)), 8);
     } else if (devices_setup[i] == SETUP_FAILED) {
       graphics.set_pen(RED);
       graphics.circle(Point(250, 50 + (i * 30)), 8);
-    } else if (devices_setup[i] == 2) { } // do nothing..
+    } 
   }
   display.update(&graphics);
   //display_mutex.unlock();
