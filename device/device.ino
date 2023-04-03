@@ -16,7 +16,7 @@ void setup(void) {
   WHITE = graphics.create_pen(255, 255, 255);
   PRIMARY = graphics.create_pen(245, 66, 66);
   RED = graphics.create_pen(255, 0, 0);
-  GREEN = graphics.create_pen(255, 255, 0);
+  GREEN = graphics.create_pen(0, 255, 0);
   display_blank();
   display_navbar();
   
@@ -91,11 +91,11 @@ void setup1(void) {
 
   // WiFi setup based on EEPROM that we read
   if (first == 0) {
-    WIFI_SETUP = SETUP_FAILED;
+    //WIFI_SETUP = SETUP_FAILED;
     wifi_first_time_setup();
   } else {
     wifi_second_time_setup();
-    WIFI_SETUP = SETUP_SUCCESS;
+    //WIFI_SETUP = SETUP_SUCCESS;
   }
 }
 
