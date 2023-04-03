@@ -179,7 +179,7 @@ char wifi_second_time_setup(void);
 typedef struct device {
   char* name;
   char status;
-}
+} device;
 
 #define SETUP_WAITING 0
 #define SETUP_SUCCESS 1
