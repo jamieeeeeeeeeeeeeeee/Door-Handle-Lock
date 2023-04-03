@@ -600,6 +600,7 @@ char wifi_first_time_setup(void) {
   WiFi.softAP("Door Lock - " + mac.substring(0, 6)); // leave password empty for open AP
   // .. as mentioned in PowerPoint we may change to WPA2-PSK later for security..
   server.begin();
+  return 1;
 }
 char wifi_second_time_setup(void) {
   AP_MODE = false;
@@ -646,4 +647,5 @@ char wifi_second_time_setup(void) {
       wifi_first_time_setup(); // !
     }
   }
+  return 1;
 }
