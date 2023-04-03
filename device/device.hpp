@@ -175,9 +175,10 @@ char wifi_first_time_setup(void);
 char wifi_second_time_setup(void);
 // No mutex required as only Core 1 ever touches the Wi-Fi functions.
 
-#define SETUP_SUCCESS 1
-#define SETUP_FAILED 2
-std::vector<char> devices_setup = {SETUP_SUCCESS, SETUP_FAILED, SETUP_SUCCESS, 0, 0}; // make sure this vector is never resized or reset
+#define SETUP_WAITING "0"
+#define SETUP_SUCCESS "1"
+#define SETUP_FAILED "2"
+std::vector<char> devices_setup = {SETUP_SUCCESS, SETUP_FAILED, SETUP_SUCCESS, SETUP_WAITING, SETUP_WAITING}; // make sure this vector is never resized or reset
 #define DISPLAY_SETUP devices_setup[0]
 #define SENSOR_SETUP devices_setup[1]
 #define SERVO_SETUP devices_setup[2]
