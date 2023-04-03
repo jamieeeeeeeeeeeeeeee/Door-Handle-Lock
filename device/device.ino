@@ -532,14 +532,14 @@ void display_setting_up(void) {
     graphics.text(devices_setup[i].name, Point(5, 40 + (i * 30)), 200, 2);
     graphics.set_pen(WHITE);
     graphics.circle(Point(250, 50 + (i * 30)), 10);
-    if (devices_setup[i].status == 0) {
+    if (devices_setup[i] == 0) {
       graphics.set_pen(PRIMARY);
       graphics.circle(Point(250, 50 + (i * 30)), 8);
-    } else if (devices_setup[i].status == 1) {
+    } else if (devices_setup[i] == 1) {
       graphics.set_pen(PRIMARY);
       graphics.circle(Point(250, 50 + (i * 30)), 8);
       graphics.text("ERROR", Point(230, 40 + (i * 30)), 200, 2);
-    } else if (devices_setup[i].status == 2) {
+    } else if (devices_setup[i] == 2) {
       graphics.set_pen(WHITE);
       graphics.text("...", Point(230, 40 + (i * 30)), 200, 2);
     }
