@@ -11,31 +11,39 @@
   BSD license, all text above must be included in any redistribution
  ****************************************************/
 
+// C / C++ libraries
 #include <vector>
-#include <unordered_map>
-#include <functional>
-
-#include <string.h>
+#include <mutex>
 #include <math.h>
+#include <string.h>
+#include <functional>
+#include <unordered_map>
+
+// Pico libraries
 #include <pico/stdlib.h>
 #include <hardware/gpio.h>
 #include <hardware/sync.h>
-#include "hardware/structs/ioqspi.h"
-#include "hardware/structs/sio.h"
+#include <hardware/structs/ioqspi.h>
+#include <hardware/structs/sio.h>
 
-#include <Adafruit_Fingerprint.h>
+// Arduino - Pico libraries
 #include <EEPROM.h>
 #include <Servo.h>
 #include <WiFi.h>
-#include "WiFiClient.h"
-#include "WiFiServer.h"
-#include "WiFiUdp.h"
+#include <WiFiClient.h>
+#include <WiFiServer.h>
+#include <WiFiUdp.h>
 
+// External libraries (Adafruit)
+#include <Adafruit_Fingerprint.h>
+
+// External libraries (Pimoroni)
 #include "src/picow/libraries/pico_display_2/pico_display_2.hpp"
 #include "src/picow/drivers/st7789/st7789.hpp"
 #include "src/picow/libraries/pico_graphics/pico_graphics.hpp"
 #include "src/picow/drivers/button/button.hpp"
 
+// Display config
 #define DISPLAY_WIDTH 320
 #define DISPLAY_HEIGHT 240
 
@@ -68,8 +76,8 @@ enum {
 #define SERVO_UNLOCK servo.write(180);
 
 // Miscellaneous macros
-#define CONFIDENCE_THRESHOLD 50
-#define PICO_LED LED_BUILTIN
+#define CONFIDENCE_THRESHOLD 50 // for fingerprint matching
+#define PICO_LED LED_BUILTIN // for pico built-in LED
 
 // Define temporary bootsel button
 static bool __no_inline_not_in_flash_func(get_bootsel_button)() {
@@ -104,7 +112,9 @@ static bool __no_inline_not_in_flash_func(get_bootsel_button)() {
     return button_state;
 }
 
-// << Globals >> //
+// *********************************//
+//              Globals             //
+// *********************************//
 using namespace pimoroni;
 
 // Bootsel globals 
@@ -150,9 +160,24 @@ uint8_t fingerprint_get_id(void);
 // Display helper function prototypes
 void display_blank(void);
 void display_navbar(void);
+void display_home(void);
+std::mutex display_mutex; // Mutex for locking shared display functions.
 
 // Servo helper function prototypes
 void servo_unlock(void);
+std::mutex servo_mutex; // Mutex for locking shared servo functions.
 
 // Wi-Fi helper function prototypes
 char wifi_connect(char *name, char *pass);
+char wifi_first_time_setup(void);
+char wifi_second_time_setup(void);
+// No mutex required as only Core 1 ever touches the Wi-Fi functions.
+
+#define SETUP_SUCCESS 1
+#define SETUP_FAILED 2
+std::vector<std::atomic<char>> devices_setup{0}; // make sure this vector is never resized or reset
+#define DISPLAY_SETUP devices_setup[0]
+#define SENSOR_SETUP devices_setup[1]
+#define SERVO_SETUP devices_setup[2]
+#define EEPROM_SETUP devices_setup[3]
+#define WIFI_SETUP devices_setup[4]

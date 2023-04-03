@@ -116,7 +116,7 @@ class _PageHandlerState extends State<PageHandler> {
 
   Future<void> sendNetworkInfo(String ssid, String pass) async {
     Socket socket = await Socket.connect('192.168.42.1', 9999);
-    String message = '$ssid?$pass;';
+    String message = '$ssid?$pass';
     socket.add(utf8.encode(message));
   }
 
