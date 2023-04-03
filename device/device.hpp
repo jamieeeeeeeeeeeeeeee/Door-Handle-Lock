@@ -160,12 +160,12 @@ uint8_t fingerprint_get_id(void);
 // Display helper function prototypes
 void display_blank(void);
 void display_navbar(void);
-void display_home(void);
-std::mutex display_mutex; // Mutex for locking shared display functions.
+void display_setting_up(void);
+// std::mutex display_mutex; // Mutex for locking shared display functions.
 
 // Servo helper function prototypes
 void servo_unlock(void);
-std::mutex servo_mutex; // Mutex for locking shared servo functions.
+// std::mutex servo_mutex; // Mutex for locking shared servo functions.
 
 // Wi-Fi helper function prototypes
 char wifi_connect(char *name, char *pass);
@@ -175,7 +175,7 @@ char wifi_second_time_setup(void);
 
 #define SETUP_SUCCESS 1
 #define SETUP_FAILED 2
-std::vector<std::atomic<char>> devices_setup{0}; // make sure this vector is never resized or reset
+std::vector<char> devices_setup{0}; // make sure this vector is never resized or reset
 #define DISPLAY_SETUP devices_setup[0]
 #define SENSOR_SETUP devices_setup[1]
 #define SERVO_SETUP devices_setup[2]

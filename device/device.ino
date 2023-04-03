@@ -96,6 +96,7 @@ void setup1(void) {
     wifi_second_time_setup();
     WIFI_SETUP = SETUP_SUCCESS;
   }
+  display_setting_up();
 }
 
 // Core 0 Main loop 
@@ -465,17 +466,17 @@ uint8_t fingerprint_get_id(void) {
 
 // Display helper function defintions
 void display_blank(void) { 
-  display_mutex.lock();
+  //display_mutex.lock();
 
   graphics.clear();
   graphics.set_pen(BLACK);
   graphics.rectangle(Rect(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT));
   display.update(&graphics);
 
-  display_mutex.unlock();
+  //display_mutex.unlock();
 }
 void display_navbar(void) {
-  display_mutex.lock();
+  //display_mutex.lock();
 
   graphics.set_pen(PRIMARY);
   graphics.rectangle(Rect(0, 0, DISPLAY_WIDTH, int(DISPLAY_HEIGHT / 8)));
@@ -508,11 +509,11 @@ void display_navbar(void) {
     graphics.text(message, Point(130, 8), 200, 2);
     display.update(&graphics);
 
-    display_mutex.unlock();
+    //display_mutex.unlock();
 }
 void display_setting_up(void) {
   // make screen black, make navbar at top that says "SETTING UP"
-  display_mutex.lock();
+  //display_mutex.lock();
 
   graphics.clear();
   graphics.set_pen(BLACK);
@@ -544,11 +545,12 @@ void display_setting_up(void) {
       graphics.text("...", Point(230, 40 + (i * 30)), 200, 2);
     }
   }
-  display_mutex.unlock();
+  //display_mutex.unlock();
 }
+
 // Servo helper function definitions
 void servo_unlock(void) {
-  servo_mutex.lock();
+  //servo_mutex.lock();
 
   // Note that this is a blocking call, the bootsell button will not be checked until the servo has completed its movement!
   for (int pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
@@ -562,7 +564,7 @@ void servo_unlock(void) {
     delay(1);                       // waits 1ms for the servo to reach the position
   }
 
-  servo_mutex.unlock();
+  //servo_mutex.unlock();
 }
 
 // Wifi helper function definitions
