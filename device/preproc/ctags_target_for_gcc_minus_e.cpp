@@ -39,13 +39,14 @@ void setup(void) {
     // Failed to find sensor
     devices_setup[1] = 2;
     // Pico LED blink is our error indicator in this case (since we can't use the sensor)
-    while (true) {
-      gpio_put((32u) /* for pico built-in LED*/, 1);
+    /*while (true) {
+      gpio_put(PICO_LED, 1);
       sleep_ms(100);
-      gpio_put((32u) /* for pico built-in LED*/, 0);
+      gpio_put(PICO_LED, 0);
       sleep_ms(100);
-    }
+    }*/
   }
+  display_setting_up();
 
   // Tell sensor to find its stored details
   finger.getParameters();
@@ -62,7 +63,6 @@ void setup(void) {
     // Fingerprints stored
     finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x02 /*!< Blue LED*/);
   }
-  display_setting_up();
 }
 
 // Core 1 Setup - Core 1 handles everything Wi-Fi and EEPROM (AP mode, TCP server, connecting to home network..)
