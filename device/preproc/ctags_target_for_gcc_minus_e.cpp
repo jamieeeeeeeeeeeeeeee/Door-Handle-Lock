@@ -1,85 +1,30 @@
 # 1 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino"
-# 2 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino" 2
+// #define EEPROM_RESET
+# 3 "/home/runner/work/Door-Handle-Lock/Door-Handle-Lock/device/device.ino" 2
 
-// Setup
-void setup(void)
-{
-  // Making sure memory used for variables is cleared
+// Core 0 Setup - Core 0 handles everything but Wi-Fi and EEPROM! (Fingerprint, display, servo..)
+void setup(void) {
+  // Clearing memory
   memset(last_pen, 0, sizeof(last_pen));
   memset(packet, 0, sizeof(packet));
 
   // Pico LED
-  pinMode((32u), OUTPUT);
-
-  // EEPROM setup
-  addr = 0;
-  EEPROM.begin(256); // 256 bytes of EEPROM (1 for being aware of first time setup, 32 SSID + 64 password) some more for later
-  byte first = EEPROM.read(addr);
-
-  /*if (first == 0 || true) {
-    AP_MODE = true;
-    WiFi.mode(WIFI_STA);
-    WiFi.softAP("Door Lock - " + mac.substring(0, 6)); // leave password empty for open AP
-    server.begin();
-  } else {
-    AP_MODE = false;
-    byte ssid_bytes[32];
-    byte password_bytes[64];
-
-    memset(ssid_bytes, 0, sizeof(ssid_bytes));
-    memset(password_bytes, 0, sizeof(password_bytes));
-
-    addr = 1; // important to skip first byte.. 
-
-    for (int i = 0; i < 32; i++) {
-      ssid_bytes[i] = EEPROM.read(addr++);
-    }
-
-    for (int i = 0; i < 64; i++) {
-      password_bytes[i] = EEPROM.read(addr++);
-    }
-
-    String ssid = String((char *)ssid_bytes); 
-    String password = String((char *)password_bytes); 
-
-    if (ssid == "" || password == "") {
-      // first time = true;
-    } else {
-      // add attempts later but for now we will just continue trying forever until we connect. 
-      while (true) { 
-        char connect = wifi_connect((char *)ssid.c_str(), (char *)password.c_str());
-        if (connect == 1) {
-          wifi_status = WIFI_CONNECTED;
-          break;
-        } else {
-          wifi_status = WIFI_NOT_CONNECTED;
-        }
-      }
-    }
-  }
-  */
+  pinMode((32u) /* for pico built-in LED*/, OUTPUT);
 
   // Display setup
   graphics.clear();
   BLACK = graphics.create_pen(0, 0, 0);
   WHITE = graphics.create_pen(255, 255, 255);
-  PRIMARY = graphics.create_pen(176, 196, 222);
+  PRIMARY = graphics.create_pen(245, 66, 66);
   display_blank();
   display_navbar();
 
-  // Wi-Fi setup
-  AP_MODE = true;
-  WiFi.mode(WIFI_STA);
-
-  // Get mac address of device
-  mac = WiFi.macAddress();
-  ssid = "Door Lock - " + mac.substring(0, 6);
-
-  WiFi.softAP(ssid); // leave password empty for open AP
-  server.begin();
-
   // Attach the servo motor
-  servo.attach(28);
+  if (!servo.attach(28)) {
+    devices_setup[2] = 2;
+  } else {
+    devices_setup[2] = 1;
+  }
 
   // Set the baudrate for the sensor serial port
   finger.begin(57600);
@@ -89,13 +34,15 @@ void setup(void)
   if (finger.verifyPassword()) {
     // Found the sensor
     finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x03 /*!< Purple LEDpassword*/);
+    devices_setup[1] = 1;
   } else {
     // Failed to find sensor
+    devices_setup[1] = 2;
     // Pico LED blink is our error indicator in this case (since we can't use the sensor)
     while (true) {
-      gpio_put((32u), 1);
+      gpio_put((32u) /* for pico built-in LED*/, 1);
       sleep_ms(100);
-      gpio_put((32u), 0);
+      gpio_put((32u) /* for pico built-in LED*/, 0);
       sleep_ms(100);
     }
   }
@@ -117,21 +64,77 @@ void setup(void)
   }
 }
 
-// Main loop
+// Core 1 Setup - Core 1 handles everything Wi-Fi and EEPROM (AP mode, TCP server, connecting to home network..)
+void setup1(void) {
+  // Setup 1 is ran by the second core (or core1, setup is ran by core0)
+  // This is where we will handle WiFi stuff which is blocking
+  // The main core will handle the sensor stuff which is also blocking..
+  // .. but it will be blocking nothing (if we have them on the same core, then)
+  // they will be blocking each other which is not good!
+
+  // EEPROM setup
+  addr = 0;
+  EEPROM.begin(256); // 256 bytes of EEPROM (1 for being aware of first time setup, 32 SSID + 64 password) some more for later
+  devices_setup[3] = 2;
+
+  byte first = EEPROM.read(addr);
+
+  // Quick reset of EEPROM during testing:
+
+
+
+
+
+
+
+  // WiFi setup based on EEPROM that we read
+  if (first == 0) {
+    devices_setup[4] = 2;
+    wifi_first_time_setup();
+  } else {
+    wifi_second_time_setup();
+    devices_setup[4] = 1;
+  }
+  display_setting_up();
+}
+
+// Core 0 Main loop 
 void loop(void) {
+  int p = 0;
+  if (get_bootsel_button()) {
+    if (finger.templateCount == 0) {
+      // No fingerprints stored, so enroll a new one
+      while(!fingerprint_enroll());
+    } else {
+      // We need confirmation from an existing fingerprint before being able to enroll a new one
+      if (fingerprint_get_id() > 0) {
+        finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x02 /*!< Blue LED*/);
+        while(!fingerprint_enroll() );
+      } else {
+      }
+    }
+  } else {
+    p = fingerprint_get_id();
+    if (p == -1) {
+      finger.LEDcontrol(0x04 /*!< Always off*/, 0, (0x01 /*!< Red LED*/));
+      finger.LEDcontrol(0x04 /*!< Always off*/, 0, (0x02 /*!< Blue LED*/));
+      finger.LEDcontrol(0x04 /*!< Always off*/, 0, (0x03 /*!< Purple LEDpassword*/));
+    } else if (p > 0) {
+      servo_unlock();
+    }
+  }
+}
+
+// Core 1 Main loop
+void loop1(void) {
   if (client) {
     if (AP_MODE) {
-      servo_unlock();
       display_blank();
-      graphics.set_pen(WHITE);
-      graphics.text("Connecting to", Point(10, 10), true, 2);
-      display.update(&graphics);
 
       // AP mode will receive the home networks 
       // SSID and password in the form SSID?PASSWORD
       client.readBytes(packet, 255);
       int question = 0;
-      int semicolon = 0;
       for (int i = 0; i < 255; i++) {
         if (packet[i] == '?') {
           packet[i] = 0;
@@ -141,23 +144,17 @@ void loop(void) {
       char *home_ssid = (char *)packet;
       char *home_password = (char *)packet + question + 1;
 
-      graphics.text(home_ssid, Point(10, 50), true, 2);
-      graphics.text(home_password, Point(10, 70), true, 2);
-      display.update(&graphics);
-
       // connect to home network
       AP_MODE = false;
       server.close();
       WiFi.softAPdisconnect(true);
       wifi_connect(home_ssid, home_password); //change this later to work with wifi_connect...   
 
-      timeout = timeout > 30 ? timeout : 30; // 30 * 500 = 15 seconds, reasonable time
+      timeout = timeout > 30 ? timeout : 30; // 30 * 400 = 12 seconds, reasonable time
 
       while (WiFi.status() != WL_CONNECTED and timeout > 0) {
         // temp blocking loop - move to second core
-        // otherwise if this hangs forever, the
-        // rest of the program will not run
-        delay(500);
+        delay(400);
         finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x03 /*!< Purple LEDpassword*/);
         timeout--;
         if (WiFi.status() == WL_CONNECT_FAILED) {
@@ -179,10 +176,10 @@ void loop(void) {
         WiFi.softAP(ssid); // leave password empty for open AP
         server.begin();
         finger.LEDcontrol(0x02 /*!< Flashing light*/, 25, 0x01 /*!< Red LED*/, 10);
-        delay(500);
+        delay(400);
         display_blank();
         graphics.set_pen(WHITE);
-        graphics.text("Failed to connect, please make sure your details are correct. Rejoin the Door Lock xx:xx network and try sending them again.", Point(10, 10), true, 2);
+        graphics.text("Failed to connect, please try again!", Point(10, 10), true, 10);
         display.update(&graphics);
         return;
       }
@@ -199,6 +196,7 @@ void loop(void) {
       }
       EEPROM.commit();*/
       // get my ip address
+
       IPAddress ip = WiFi.localIP();
 
       display_blank();
@@ -209,13 +207,12 @@ void loop(void) {
 
       server.begin();
       finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x02 /*!< Blue LED*/);
-      delay(500);
     } else {
       size_t read = client.readBytes(packet, 5);
       if (read == 0) {
-        //servo_unlock();
+        //servo_unlock(); ??
       } else if (read != 5) {
-        // unknown command
+        // unknown command??
       } else {
         if (memcmp(packet, "UNLCK", 5) == 0) {
           servo_unlock();
@@ -248,30 +245,6 @@ void loop(void) {
     }
   } else {
     client = server.available();
-  }
-
-  int p = 0;
-  if (get_bootsel_button()) {
-    if (finger.templateCount == 0) {
-      // No fingerprints stored, so enroll a new one
-      while(!fingerprint_enroll());
-    } else {
-      // We need confirmation from an existing fingerprint before being able to enroll a new one
-      if (fingerprint_get_id() > 0) {
-        finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x02 /*!< Blue LED*/);
-        while(!fingerprint_enroll() );
-      } else {
-      }
-    }
-  } else {
-    p = fingerprint_get_id();
-    if (p == -1) {
-      finger.LEDcontrol(0x04 /*!< Always off*/, 0, (0x01 /*!< Red LED*/));
-      finger.LEDcontrol(0x04 /*!< Always off*/, 0, (0x02 /*!< Blue LED*/));
-      finger.LEDcontrol(0x04 /*!< Always off*/, 0, (0x03 /*!< Purple LEDpassword*/));
-    } else if (p > 0) {
-      servo_unlock();
-    }
   }
 }
 
@@ -481,7 +454,7 @@ uint8_t fingerprint_get_id(void) {
   int id = finger.fingerID;
   int confidence = finger.confidence;
 
-  if (confidence > 50) {
+  if (confidence > 50 /* for fingerprint matching*/) {
     finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x02 /*!< Blue LED*/);
     return id;
   } else {
@@ -492,12 +465,18 @@ uint8_t fingerprint_get_id(void) {
 
 // Display helper function defintions
 void display_blank(void) {
+  //display_mutex.lock();
+
   graphics.clear();
   graphics.set_pen(BLACK);
   graphics.rectangle(Rect(0, 0, 320, 240));
   display.update(&graphics);
+
+  //display_mutex.unlock();
 }
 void display_navbar(void) {
+  //display_mutex.lock();
+
   graphics.set_pen(PRIMARY);
   graphics.rectangle(Rect(0, 0, 320, int(240 / 8)));
   graphics.set_pen(BLACK);
@@ -528,10 +507,50 @@ void display_navbar(void) {
     }
     graphics.text(message, Point(130, 8), 200, 2);
     display.update(&graphics);
+
+    //display_mutex.unlock();
+}
+void display_setting_up(void) {
+  // make screen black, make navbar at top that says "SETTING UP"
+  //display_mutex.lock();
+
+  graphics.clear();
+  graphics.set_pen(BLACK);
+  graphics.rectangle(Rect(0, 0, 320, 240));
+  graphics.set_pen(PRIMARY);
+  graphics.rectangle(Rect(0, 0, 320, int(240 / 8)));
+  graphics.set_pen(BLACK);
+  graphics.text("Setting up", Point(5, 5), 50, 3);
+
+  // now loop through devices_setup char vector
+  // print the name and status of each device
+  // if device is 0 then draw a green smile :)
+  // if device is 1 then draw a red frown :(
+  // if device is 2 then draw a white ... (waiting)
+
+  for (int i = 0; i < devices_setup.size(); i++) {
+    graphics.text("device1..", Point(5, 40 + (i * 30)), 200, 2);
+    graphics.set_pen(WHITE);
+    graphics.circle(Point(250, 50 + (i * 30)), 10);
+    if (devices_setup[i] == 0) {
+      graphics.set_pen(PRIMARY);
+      graphics.circle(Point(250, 50 + (i * 30)), 8);
+    } else if (devices_setup[i] == 1) {
+      graphics.set_pen(PRIMARY);
+      graphics.circle(Point(250, 50 + (i * 30)), 8);
+      graphics.text("ERROR", Point(230, 40 + (i * 30)), 200, 2);
+    } else if (devices_setup[i] == 2) {
+      graphics.set_pen(WHITE);
+      graphics.text("...", Point(230, 40 + (i * 30)), 200, 2);
+    }
+  }
+  //display_mutex.unlock();
 }
 
 // Servo helper function definitions
 void servo_unlock(void) {
+  //servo_mutex.lock();
+
   // Note that this is a blocking call, the bootsell button will not be checked until the servo has completed its movement!
   for (int pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
     // in steps of 1 degree
@@ -543,19 +562,19 @@ void servo_unlock(void) {
     servo.write(pos); // tell servo to go to position in variable 'pos'
     delay(1); // waits 1ms for the servo to reach the position
   }
+
+  //servo_mutex.unlock();
 }
 
 // Wifi helper function definitions
 char wifi_connect(char *name, char *pass) {
   // Connect to Wi-Fi
   WiFi.begin(name, pass);
-  timeout = timeout > 30 ? timeout : 30; // 30 * 500 = 15 seconds, reasonable time
+  timeout = timeout > 30 ? timeout : 30; // 30 * 300 = 9 seconds, reasonable time
 
   while (WiFi.status() != WL_CONNECTED and timeout > 0) {
-    // temp blocking loop - move to second core
-    // otherwise if this hangs forever, the
-    // rest of the program will not run
-    delay(500);
+    // this is of course blocking!
+    delay(300);
     finger.LEDcontrol(0x01 /*!< Breathing light*/, 100, 0x03 /*!< Purple LEDpassword*/);
     timeout--;
     if (WiFi.status() == WL_CONNECT_FAILED) {
@@ -567,12 +586,67 @@ char wifi_connect(char *name, char *pass) {
   if (WiFi.status() != WL_CONNECTED) {
     WiFi.disconnect(); // cancel connection attempt, if any
     // in the case of multiple retries, that are caused by
-    // the connection simply being slow, we will increase the timeout attempts
+    // .. the connection simply being slow, we will increase the timeout attempts
     if (timeout == 0) {
       timeout = 30 + timeout_safety;
       timeout_safety += 8;
     }
     return 0;
+  }
+  return 1;
+}
+char wifi_first_time_setup(void) {
+  AP_MODE = true;
+  WiFi.mode(WIFI_STA);
+  WiFi.softAP("Door Lock - " + mac.substring(0, 6)); // leave password empty for open AP
+  // .. as mentioned in PowerPoint we may change to WPA2-PSK later for security..
+  server.begin();
+  return 1;
+}
+char wifi_second_time_setup(void) {
+  AP_MODE = false;
+  byte ssid_bytes[32];
+  byte password_bytes[64];
+  memset(ssid_bytes, 0, sizeof(ssid_bytes));
+  memset(password_bytes, 0, sizeof(password_bytes));
+
+  addr = 1; // important to skip first byte..
+
+  // EEPROM does not get hurt by reading so we can do this as much as we want :)
+  for (int i = 0; i < 32; i++) {
+    ssid_bytes[i] = EEPROM.read(addr++);
+  }
+
+  for (int i = 0; i < 64; i++) {
+    password_bytes[i] = EEPROM.read(addr++);
+  }
+
+  char* ssid = (char *)ssid_bytes;
+  char* password = (char *)password_bytes;
+
+  // this is in unlikley case that first byte of EEPROM has been set
+  // .. maybe not reset properly at factory, or cosmic radiation hit it
+  // .. and somehow didn't hit anything else
+  if (ssid == "" || password == "") {
+    wifi_first_time_setup();
+  } else {
+    // now we try connecting to the network, I think 2 attempts and then give up 
+    // .. will be suitable. This will be in the case that the user's home WiFi is down
+    // .. what we will do is put the thing into AP mode, but not reset the EEPROM,
+    // since if the internet is just temporarily down, for example a power cut, then
+    // a simple fix of turning on and off again will suffice :)
+    for (int i = 0; i < 2; i++) {
+      char connect = wifi_connect(ssid, password);
+      if (connect == 1) {
+        wifi_status = WIFI_CONNECTED;
+        break;
+      } else {
+        wifi_status = WIFI_NOT_CONNECTED;
+      }
+    }
+    if (wifi_status == WIFI_NOT_CONNECTED) {
+      wifi_first_time_setup(); // !
+    }
   }
   return 1;
 }
