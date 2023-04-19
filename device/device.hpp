@@ -12,8 +12,9 @@
  ****************************************************/
 
 // C / C++ libraries
-#include <vector>
+#include <cmath>
 #include <mutex>
+#include <vector>
 #include <math.h>
 #include <string.h>
 #include <functional>
@@ -25,8 +26,6 @@
 #include <hardware/sync.h>
 #include <hardware/structs/ioqspi.h>
 #include <hardware/structs/sio.h>
-#include <FreeRTOS.h>
-#include <semphr.h>
 
 // Arduino - Pico libraries
 #include <EEPROM.h>
@@ -114,24 +113,6 @@ static bool __no_inline_not_in_flash_func(get_bootsel_button)() {
     return button_state;
 }
 
-class Mutex {
-  public:
-    Mutex() {
-      mutex = xSemaphoreCreateMutex();
-    }
-
-    void lock() {
-      xSemaphoreTake(mutex, portMAX_DELAY);
-    }
-
-    void unlock() {
-      xSemaphoreGive(mutex);
-    }
-
-  private:
-    SemaphoreHandle_t mutex;
-};
-
 // *********************************//
 //              Globals             //
 // *********************************//
@@ -164,7 +145,8 @@ Servo servo;
 WiFiServer server(9999);
 WiFiClient client;
 bool AP_MODE = true;
-uint8_t packet[255];
+int16_t packet[255];
+uint8_t packet1[255];
 int wifi_status = WIFI_NOT_CONNECTED;
 int timeout = 30;
 int timeout_safety = 8;
@@ -181,13 +163,10 @@ uint8_t fingerprint_get_id(void);
 
 // Display helper function prototypes
 void display_blank(void);
-void display_navbar(void);
 void display_setting_up(void);
-Mutex display_mutex{}; // Mutex for locking shared display functions.
 
 // Servo helper function prototypes
 void servo_unlock(void);
-Mutex servo_unlock{}; // Mutex for locking shared servo functions.
 
 // Wi-Fi helper function prototypes
 char wifi_connect(char *name, char *pass);

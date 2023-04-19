@@ -55,27 +55,37 @@ class _PageHandlerState extends State<PageHandler> {
         return;
       }
       try {
-        Socket.connect(ipAddress, 9999).then((socket) {
-          int n = 320 * 240 * 3;
-          int l = encodedBytes.length;
-          if (l < n) {
-            int m = l % 3;
-            n = l - m; // just in case not divisible by 3
+        final socket = await Socket.connect(ipAddress, 9999);
+        //socket.add(utf8.encode("IMAGE"));
+        
+        int n = 320 * 240 * 3;
+        int l = encodedBytes.length;
+        if (l < n) {
+          int m = l % 3;
+          n = l - m; // just in case not divisible by 3
+        }
+        // send r, g, b, x1, x2 (if x > 255), y
+        for (int i = 0; i < n; i += 3) {
+          int p = i ~/ 3;
+          int x = p % (320);
+          int x1 = 0;
+          if (x > 255) {
+            x1 = x - 255;
+            x = 255;
           }
-          for (int i = 0; i < n; i += 3) {
-            _socket?.add(
-                [encodedBytes[i], encodedBytes[i + 1], encodedBytes[i + 2]]);
-          }
+          int y = p ~/ (320);
+          socket.add([encodedBytes[i], encodedBytes[i + 1], encodedBytes[i + 2], x, x1, y]);
+        }
 
-          while (l < n) {
-            _socket?.add([0, 0, 0]);
-            l += 3;
-          }
-          socket.flush();
-          socket.close();
-        });
+        while (l < n) {
+          socket.add([0, 0, 0]);
+          l += 3;
+        }
       } catch (e) {
-        // ignore errors for now.
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$e'),),
+        );
       }
     }
   }
@@ -94,18 +104,7 @@ class _PageHandlerState extends State<PageHandler> {
     try {
       final socket = await Socket.connect(ipAddress, 9999);
       socket.add(utf8.encode("UNLCK"));
-
-      socket.listen((data) {
-        ScaffoldMessenger.of(context).removeCurrentSnackBar();
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Successful!')));
-        socket.close();
-      }, onError: (error) {
-        ScaffoldMessenger.of(context).removeCurrentSnackBar();
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Failed $error')));
-        socket.close();
-      });
+      socket.flush();
     } catch (e) {
       ScaffoldMessenger.of(context).removeCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
