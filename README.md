@@ -1,3 +1,4 @@
+See device / device.ino for the best code sample 👍
 # Door Handle Lock
 Door handle and lock for A-Level Design Engineering project.
 
